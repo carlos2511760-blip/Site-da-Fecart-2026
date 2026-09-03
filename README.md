@@ -5,11 +5,13 @@ Site editorial da Fecart: um portfólio de projetos, grupos e processos de robó
 ## Estrutura
 
 - `index.html`: página principal, cards, detalhes dos projetos e área de manutenção oculta.
+- `quiz.html`: página interna do quiz, respostas e ranking da feira.
 - `css/style.css` e `css/overrides.css`: identidade visual, componentes, curtidas e responsividade.
 - `js/app.js`: carregamento, filtros, curtidas, Making Of e editor por código.
 - `js/supabase-config.js`: URL e chave pública do Supabase.
 - `data/content.json`: conteúdo inicial e fallback local.
 - `database/supabase.sql`: tabelas, função de curtida e políticas do banco.
+- `database/quiz.sql`: tabelas de perguntas, respostas e ranking do quiz.
 - `.github/workflows/pages.yml`: publicação automática no GitHub Pages.
 
 ## Grupos iniciais
@@ -74,3 +76,7 @@ Depois, acesse `http://localhost:8080`.
 Todo push na branch `main` aciona o workflow de GitHub Pages. O site publicado está em:
 
 <https://carlos2511760-blip.github.io/Site-da-Fecart-2026/>
+
+## Quiz e ranking
+
+O botão no final da homepage leva para `quiz.html`. O participante informa o nome, responde às perguntas de múltipla escolha e recebe a pontuação imediatamente. Quando o banco está disponível, o resultado é salvo em `fecart_quiz_attempts` e o ranking é carregado por pontuação. Execute também `database/quiz.sql` no SQL Editor para criar as tabelas e inserir as perguntas iniciais. Caso o banco esteja temporariamente indisponível, o quiz utiliza perguntas de reserva e mantém um ranking local no navegador.
