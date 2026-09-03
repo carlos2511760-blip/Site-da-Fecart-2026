@@ -5,10 +5,13 @@
   const image = (src, alt, className = '') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy">` : `<div class="image-placeholder ${className}" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
   const placeholderMedia = (label, type = 'photo') => `<div class="media-placeholder ${type}-placeholder" role="img" aria-label="${escapeHTML(label)}"><span>${type === 'video' ? '▶' : 'F'}</span><small>${escapeHTML(label)}</small></div>`;
   const query = new URLSearchParams(location.search).get('grupo');
+  let data;
+  let activeGroup;
+  const editorField = (label, key, value, multiline = false) => `<div class="editor-field"><label>${label}</label>${multiline ? `<textarea data-group-field="${key}">${escapeHTML(value || '')}</textarea>` : `<input data-group-field="${key}" value="${escapeHTML(value || '')}">`}</div>`;
 
   function render(group, projects) {
-    const projectList = group.projects?.length ? group.projects : (group.project?.title ? [group.project] : []);
-    const project = projectList[0] || {};
+    activeGroup = group;
+    const project = group.projects?.length ? group.projects[0] : (group.project?.title ? group.project : {});
     const memberCount = group.id === 'sabor-robotica' ? 4 : 5;
     const members = Array.from({ length: memberCount }, (_, index) => group.members?.[index] || { name: `Integrante ${index + 1}`, role: 'Função a definir', photo: '' });
     const gallery = group.gallery?.length ? group.gallery : [{ type: 'photo', caption: 'Foto do processo' }, { type: 'photo', caption: 'Protótipo em teste' }, { type: 'video', caption: 'Vídeo do making of' }];
@@ -16,16 +19,17 @@
     document.title = `${group.name} · Fecart`;
   }
 
-  async function init() {
-    try {
-      const response = await fetch('data/content.json');
-      const initial = await response.json();
-      let data = initial;
-      try { const draft = JSON.parse(localStorage.getItem('fecart-content-draft') || 'null'); if (draft && draft.contentVersion === initial.contentVersion) data = draft; } catch {}
-      const group = data.groups.find(item => item.id === query) || data.groups[0];
-      const projects = data.projects.filter(item => item.groupId === group.id);
-      render(group, projects);
-    } catch { $('#group-content').innerHTML = '<p class="empty-detail">Não foi possível carregar este grupo agora.</p>'; }
+  function renderEditor() {
+    const group = activeGroup;
+    const project = group.project || {};
+    const fields = `${editorField('Logo (URL ou caminho)', 'logo', group.logo)}${editorField('Descrição do grupo', 'description', group.description, true)}${editorField('Integrantes em JSON', 'members', JSON.stringify(group.members || [], null, 2), true)}${editorField('Projeto em JSON', 'project', JSON.stringify(project, null, 2), true)}${editorField('Galeria de fotos e vídeos em JSON', 'gallery', JSON.stringify(group.gallery || [], null, 2), true)}`;
+    $('#group-editor-fields').innerHTML = fields;
+    $$('[data-group-field]').forEach(field => field.addEventListener('input', () => updateGroupField(field.dataset.groupField, field.value)));
   }
+  const $$ = selector => [...document.querySelectorAll(selector)];
+  function updateGroupField(key, value) { if (['members', 'project', 'gallery'].includes(key)) { try { activeGroup[key] = JSON.parse(value); } catch { return; } } else activeGroup[key] = value; data.contentVersion = 4; localStorage.setItem('fecart-content-draft', JSON.stringify(data)); const projects = data.projects.filter(item => item.groupId === activeGroup.id); render(activeGroup, projects); renderEditor(); $('#group-editor-status').textContent = 'Alteração salva neste navegador.'; }
+  function resetGroup() { localStorage.removeItem('fecart-content-draft'); const group = data.groups.find(item => item.id === query) || data.groups[0]; render(group, data.projects.filter(item => item.groupId === group.id)); renderEditor(); $('#group-editor-status').textContent = 'Conteúdo original restaurado.'; }
+  function initEditor() { $('#group-editor-close').addEventListener('click', () => { $('#group-editor-panel').hidden = true; }); $('#group-editor-save').addEventListener('click', () => { data.contentVersion = 4; localStorage.setItem('fecart-content-draft', JSON.stringify(data)); $('#group-editor-status').textContent = 'Alterações salvas neste navegador.'; }); $('#group-editor-reset').addEventListener('click', resetGroup); document.addEventListener('keydown', event => { const maintenanceKey = event.key === '\\' || event.key === '|' || event.code === 'Backslash' || event.code === 'IntlBackslash'; if (event.ctrlKey && event.shiftKey && maintenanceKey) { event.preventDefault(); const panel = $('#group-editor-panel'); panel.hidden = !panel.hidden; if (!panel.hidden) { renderEditor(); $('#group-editor-fields input')?.focus(); } } if (event.key === 'Escape') $('#group-editor-panel').hidden = true; }); }
+  async function init() { try { const response = await fetch('data/content.json'); const initial = await response.json(); data = initial; try { const draft = JSON.parse(localStorage.getItem('fecart-content-draft') || 'null'); if (draft && draft.contentVersion === initial.contentVersion) data = draft; } catch {} const group = data.groups.find(item => item.id === query) || data.groups[0]; render(group, data.projects.filter(item => item.groupId === group.id)); initEditor(); } catch { $('#group-content').innerHTML = '<p class="empty-detail">Não foi possível carregar este grupo agora.</p>'; } }
   init();
 })();
