@@ -2,6 +2,7 @@
   'use strict';
   const DATA_URL = 'data/content.json';
   const STORAGE_KEY = 'fecart-content-draft';
+  const CONTENT_VERSION = 2;
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   let data = null;
@@ -17,7 +18,11 @@
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       initialData = await response.json();
       const draft = localStorage.getItem(STORAGE_KEY);
-      data = draft ? JSON.parse(draft) : structuredClone(initialData);
+      const parsedDraft = draft ? JSON.parse(draft) : null;
+      data = parsedDraft && parsedDraft.contentVersion === CONTENT_VERSION
+        ? parsedDraft
+        : structuredClone(initialData);
+      data.contentVersion = CONTENT_VERSION;
     } catch (error) {
       console.error('Não foi possível carregar o conteúdo.', error);
       data = initialData || { site: {}, groups: [], projects: [] };
@@ -104,6 +109,7 @@
     else if (path.startsWith('project:')) { const [, id, key] = path.split(':'); const item = data.projects.find(project => project.id === id); if (item) item[key] = value; }
     else setByPath(path, value);
     renderEditableCopy(); renderGroups(); renderProjects($('.filter-button.active')?.dataset.filter || 'all');
+    data.contentVersion = CONTENT_VERSION;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     $('#editor-status').textContent = 'Rascunho salvo neste navegador.';
   }
@@ -118,7 +124,7 @@
 
   function openEditor() { renderEditor(); $('#editor-panel').hidden = false; document.body.classList.add('editor-open'); $('#editor-close').focus(); }
   function closeEditor() { $('#editor-panel').hidden = true; document.body.classList.remove('editor-open'); }
-  function resetEditor() { data = structuredClone(initialData); localStorage.removeItem(STORAGE_KEY); renderAll(); renderEditor(); $('#editor-status').textContent = 'Conteúdo restaurado para a versão do repositório.'; }
+  function resetEditor() { data = structuredClone(initialData); data.contentVersion = CONTENT_VERSION; localStorage.removeItem(STORAGE_KEY); renderAll(); renderEditor(); $('#editor-status').textContent = 'Conteúdo restaurado para a versão do repositório.'; }
   function exportJSON() { const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'content-fecart-atualizado.json'; link.click(); URL.revokeObjectURL(link.href); $('#editor-status').textContent = 'JSON exportado. Substitua data/content.json antes de publicar.'; }
   function renderAll() { renderEditableCopy(); renderFilters(); renderProjects(); renderGroups(); }
 

@@ -1,4 +1,5 @@
 {
+  "contentVersion": 2,
   "site": {
     "hero": {
       "title": "Ideias que ganham corpo.",
@@ -13,69 +14,10 @@
     }
   },
   "groups": [
-    { "id": "alecrins-dourados", "name": "Alecrins dourados", "description": "Ideias que florescem quando a equipe experimenta sem medo.", "accent": "#e8b63f", "members": "Grupo de robótica", "image": "" },
-    { "id": "faotasticos", "name": "Fãotásticos", "description": "Energia, invenção e um plano que pode mudar no caminho.", "accent": "#e05b3f", "members": "Grupo de robótica", "image": "" },
-    { "id": "sabor-robotica", "name": "SabOr robótica", "description": "Precisão e criatividade para transformar perguntas em protótipos.", "accent": "#496453", "members": "Grupo de robótica", "image": "" },
-    { "id": "acerto-404", "name": "Acerto 404", "description": "Quando dá errado, a descoberta costuma estar por perto.", "accent": "#b8a3d0", "members": "Grupo de robótica", "image": "" }
+    { "id": "alecrins-dourados", "name": "Alecrins dourados", "description": "", "accent": "#e8b63f", "members": "", "image": "" },
+    { "id": "faotasticos", "name": "Fãotásticos", "description": "", "accent": "#e05b3f", "members": "", "image": "" },
+    { "id": "sabor-robotica", "name": "SabOr robótica", "description": "", "accent": "#496453", "members": "", "image": "" },
+    { "id": "acerto-404", "name": "Acerto 404", "description": "", "accent": "#b8a3d0", "members": "", "image": "" }
   ],
-  "projects": [
-    {
-      "id": "braco-robotico-4x",
-      "title": "Braço Robótico 4 Eixos",
-      "shortDescription": "Braço robótico articulado com 4 graus de liberdade, controlado por joystick analógico via Arduino Mega.",
-      "fullDescription": "Projeto desenvolvido com o objetivo de criar um braço robótico funcional com 4 eixos independentes de movimento. O sistema de controle utiliza joystick analógico e botões para acionar cada articulação. A estrutura foi fabricada com MDF cortado a laser e os movimentos são realizados por servo-motores.",
-      "thumbnail": "assets/images/projects/braco-robotico-thumb.jpg",
-      "coverImage": "assets/images/projects/braco-robotico-cover.jpg",
-      "tags": ["Arduino", "Servo Motor", "MDF Laser", "C++"],
-      "year": "2025",
-      "status": "Concluído",
-      "team": ["Ana Lima", "Bruno Souza", "Carlos Pereira"],
-      "groupId": "alecrins-dourados",
-      "featured": true,
-      "roots": [
-        { "date": "12 fev 2025", "title": "Concepção e pesquisa", "description": "A equipe pesquisou diferentes tipos de braços robóticos, criou os primeiros esboços e definiu os componentes necessários." },
-        { "date": "05 mar 2025", "title": "Modelagem no CAD", "description": "Cada segmento foi projetado levando em conta os limites de movimento dos servo-motores e a resistência do MDF." },
-        { "date": "22 mar 2025", "title": "Corte e montagem", "description": "As peças foram cortadas a laser. Alguns ajustes de tolerância garantiram o movimento suave das articulações." },
-        { "date": "28 abr 2025", "title": "Testes finais", "description": "A equipe ajustou os limites de ângulo e documentou as descobertas da versão final." }
-      ]
-    },
-    {
-      "id": "veiculo-autonomo-usc",
-      "title": "Veículo Autônomo",
-      "shortDescription": "Carrinho robótico capaz de desviar de obstáculos usando sensores ultrassônicos e lógica de decisão.",
-      "fullDescription": "Veículo robótico com chassis em acrílico que navega de forma autônoma em ambientes desconhecidos. Sensores ultrassônicos mapeiam o espaço em tempo real, enquanto um algoritmo de desvio prioriza direções e evita loops.",
-      "thumbnail": "assets/images/projects/veiculo-autonomo-thumb.jpg",
-      "coverImage": "assets/images/projects/veiculo-autonomo-cover.jpg",
-      "tags": ["Arduino", "HC-SR04", "Motores DC", "Algoritmo"],
-      "year": "2025",
-      "status": "Em desenvolvimento",
-      "team": ["Diana Rocha", "Eduardo Matos"],
-      "groupId": "faotasticos",
-      "featured": true,
-      "roots": [
-        { "date": "01 mar 2025", "title": "Definição do problema", "description": "O desafio foi fazer o robô navegar em uma arena sem colidir com obstáculos." },
-        { "date": "18 mar 2025", "title": "Construção do chassis", "description": "A equipe integrou suportes para sensores, bateria e motores em um chassis compacto." },
-        { "date": "14 abr 2025", "title": "Algoritmo de desvio", "description": "Uma máquina de estados passou a controlar os modos de avançar, desviar e recuar." }
-      ]
-    },
-    {
-      "id": "robo-seguidor-linha",
-      "title": "Robô Seguidor de Linha",
-      "shortDescription": "Robô que segue trilhas coloridas usando sensor de refletância e controle PID.",
-      "fullDescription": "Um projeto clássico reimaginado com controle PID ao invés do simples controle liga/desliga. A equipe calibrou os sensores manualmente e registrou cada iteração na pista de testes.",
-      "thumbnail": "",
-      "coverImage": "",
-      "tags": ["Arduino", "TCRT5000", "Controle PID"],
-      "year": "2024",
-      "status": "Concluído",
-      "team": ["Felipe Andrade", "Gabriela Costa", "Henrique Dias"],
-      "groupId": "sabor-robotica",
-      "featured": false,
-      "roots": [
-        { "date": "20 ago 2024", "title": "Estudo do controle PID", "description": "A equipe estudou a teoria de controle e simulou o impacto de cada ganho no comportamento do sistema." },
-        { "date": "05 set 2024", "title": "Protótipo e calibração", "description": "O primeiro protótipo funcional permitiu calibrar sensores e ajustar os ganhos na pista de testes." },
-        { "date": "25 set 2024", "title": "Versão final", "description": "A versão final completou o percurso com curvas e registrou um desempenho mais suave." }
-      ]
-    }
-  ]
+  "projects": []
 }
