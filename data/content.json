@@ -1,5 +1,5 @@
 {
-  "contentVersion": 2,
+  "contentVersion": 4,
   "site": {
     "hero": {
       "title": "Ideias que ganham corpo.",
@@ -7,17 +7,17 @@
       "manifesto": "Construir é uma forma de perguntar melhor. Desmontar também."
     },
     "process": {
-      "description": "Antes do projeto pronto, existe um mapa feito de rascunhos, fios, erros bons e pequenas vitórias. O Making Of registra esse caminho para que outra pessoa possa começar de onde a gente parou."
+      "description": "Antes do projeto pronto, existe um mapa feito de rascunhos, fios, erros bons e pequenas vitórias."
     },
     "about": {
       "description": "A Fecart reúne estudantes que aprendem criando. Cada grupo transforma conceitos de eletrônica, programação e mecânica em projetos concretos — e transforma cada tentativa em conhecimento compartilhado."
     }
   },
   "groups": [
-    { "id": "alecrins-dourados", "name": "Alecrins dourados", "description": "", "accent": "#e8b63f", "members": "", "image": "" },
-    { "id": "faotasticos", "name": "Fãotásticos", "description": "", "accent": "#e05b3f", "members": "", "image": "" },
-    { "id": "sabor-robotica", "name": "SabOr robótica", "description": "", "accent": "#496453", "members": "", "image": "" },
-    { "id": "acerto-404", "name": "Acerto 404", "description": "", "accent": "#b8a3d0", "members": "", "image": "" }
+    { "id": "alecrins-dourados", "name": "Alecrins dourados", "description": "", "accent": "#e8b63f", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] },
+    { "id": "faotasticos", "name": "Fãotásticos", "description": "", "accent": "#e05b3f", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] },
+    { "id": "sabor-robotica", "name": "SabOr robótica", "description": "", "accent": "#496453", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] },
+    { "id": "acerto-404", "name": "Acerto 404", "description": "", "accent": "#b8a3d0", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] }
   ],
   "projects": []
 }
