@@ -4,43 +4,64 @@ Site editorial da Fecart: um portfólio de projetos, grupos e processos de robó
 
 ## Estrutura
 
-- `index.html`: página principal, modal de projetos e painel de edição.
-- `css/style.css`: identidade visual, componentes e responsividade.
-- `js/app.js`: carregamento de dados, filtros, grupos, Making Of e editor.
-- `data/content.json`: fonte de conteúdo do site.
-- `assets/images/projects/`: imagens de projetos.
+- `index.html`: página principal, cards, detalhes dos projetos e área de manutenção oculta.
+- `css/style.css` e `css/overrides.css`: identidade visual, componentes, curtidas e responsividade.
+- `js/app.js`: carregamento, filtros, curtidas, Making Of e editor por código.
+- `js/supabase-config.js`: URL e chave pública do Supabase.
+- `data/content.json`: conteúdo inicial e fallback local.
+- `database/supabase.sql`: tabelas, função de curtida e políticas do banco.
 - `.github/workflows/pages.yml`: publicação automática no GitHub Pages.
 
 ## Grupos iniciais
 
-A página começa com quatro grupos fixos:
+A página começa com quatro grupos fixos e vazios:
 
 - Alecrins dourados
 - Fãotásticos
 - SabOr robótica
 - Acerto 404
 
-Cada grupo possui um identificador estável e pode receber descrição, imagem e projetos relacionados no arquivo de conteúdo.
+## Banco de dados
 
-## Editar conteúdo pelo site
+O site usa o Supabase diretamente pela API REST. Execute `database/supabase.sql` no **SQL Editor** do projeto Supabase antes de usar o salvamento e as curtidas.
 
-Pressione **Ctrl + Shift + \\** para abrir o modo de manutenção. Também é possível clicar em **Editar conteúdo** no cabeçalho em telas maiores.
+O banco possui uma tabela de projetos e uma tabela de contadores de curtidas. A função `fecart_like_project` incrementa o contador de forma atômica, evitando que duas curtidas simultâneas substituam uma à outra.
 
-O editor permite atualizar textos, descrições, títulos de projetos, caminhos de imagens e imagens locais. As alterações são salvas como rascunho no navegador. Para publicar alterações no repositório:
+A chave incluída em `js/supabase-config.js` é uma chave pública de frontend. Ela nunca deve ser substituída por uma chave secreta de serviço. Como o site não possui login, as políticas de gravação do editor são deliberadamente abertas para cumprir o requisito de manutenção por código; isso significa que qualquer pessoa tecnicamente capaz de descobrir o endpoint poderia enviar alterações. Para uma área administrativa segura no futuro, será necessário um backend ou autenticação separada.
 
-1. Abra o editor pelo atalho.
-2. Faça as alterações e confira a prévia.
-3. Clique em **Exportar JSON**.
-4. Substitua `data/content.json` pelo arquivo exportado.
-5. Revise o diff e faça commit e push na branch `main`.
+## Adicionar e editar projetos
 
-O rascunho local não é um mecanismo de autenticação. O navegador não publica alterações no GitHub automaticamente.
+Não existe botão público de edição. Pressione **Ctrl + Shift + \\** para abrir a área reservada de manutenção.
+
+Dentro dela, é possível:
+
+1. Adicionar um novo projeto.
+2. Editar título, descrições, grupo, ano, status, imagem e Making Of.
+3. Salvar os projetos no Supabase.
+4. Exportar um JSON como backup local.
+5. Restaurar o conteúdo inicial local.
+
+O campo Making Of aceita uma lista JSON neste formato:
+
+```json
+[
+  {
+    "date": "12 fev 2026",
+    "title": "Primeiro protótipo",
+    "description": "A equipe testou a primeira ideia e registrou o que aprendeu."
+  }
+]
+```
+
+Os visitantes acessam o Making Of dentro do detalhe individual de cada projeto, na seção **“Por trás de tudo · making of”**.
+
+## Curtidas
+
+Ao abrir um projeto, o visitante pode clicar em **Curtir este projeto**. A curtida é registrada no Supabase sem exigir login. O navegador também guarda a identificação local do projeto curtido para evitar múltiplos cliques no mesmo dispositivo.
 
 ## Desenvolvimento local
 
-Por ser um site estático, ele pode ser servido por qualquer servidor local. Ao abrir diretamente como arquivo, alguns navegadores bloqueiam o `fetch` do JSON; use um servidor HTTP local para testar a aplicação completa.
-
-Exemplo com Python:
+Sirva o diretório por HTTP para que o carregamento dos arquivos JSON funcione:
 
 ```bash
 python3 -m http.server 8080
@@ -50,4 +71,6 @@ Depois, acesse `http://localhost:8080`.
 
 ## Publicação
 
-Todo push na branch `main` aciona o workflow de GitHub Pages. Nas configurações do repositório, selecione **GitHub Actions** como origem de publicação caso ainda não esteja configurado.
+Todo push na branch `main` aciona o workflow de GitHub Pages. O site publicado está em:
+
+<https://carlos2511760-blip.github.io/Site-da-Fecart-2026/>

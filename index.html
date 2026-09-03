@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/overrides.css">
 </head>
 <body>
   <div class="site-shell">
@@ -21,9 +22,8 @@
       <a class="brand" href="#inicio" aria-label="Fecart, voltar ao início"><span class="brand-mark">F</span><span>fecart</span></a>
       <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu <span>+</span></button>
       <nav class="site-nav" id="site-nav" aria-label="Navegação principal">
-        <a href="#projetos">Projetos</a><a href="#grupos">Grupos</a><a href="#processo">Processos</a><a href="#sobre">Sobre</a>
+        <a href="#inicio">Início</a><a href="#projetos">Projetos</a><a href="#grupos">Grupos</a><a href="#sobre">Sobre</a>
       </nav>
-      <button class="editor-hint" id="editor-hint" type="button" title="Abrir editor (Ctrl + Shift + \")">Editar conteúdo <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>\</kbd></button>
     </header>
 
     <main id="inicio">
@@ -45,7 +45,7 @@
       </section>
 
       <section class="projects-section section-pad" id="projetos" aria-labelledby="projects-title">
-        <div class="section-heading"><div><p class="section-kicker">02 — projetos em processo</p><h2 id="projects-title">Feitos para <em>funcionar.</em><br>Feitos para <em>ensinar.</em></h2></div><p class="section-note">Uma coleção de protótipos, testes e descobertas. Filtre por grupo e encontre o caminho de cada ideia.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">02 — projetos em processo</p><h2 id="projects-title">Feitos para <em>funcionar.</em><br>Feitos para <em>ensinar.</em></h2></div><p class="section-note">Clique em um projeto para conhecer a ideia e entrar em <strong>Por trás de tudo</strong>: o making of de cada descoberta.</p></div>
         <div class="filter-bar" id="filter-bar" aria-label="Filtrar projetos"></div>
         <div class="projects-grid" id="projects-grid" aria-live="polite"></div>
         <p class="empty-state" id="empty-state" hidden>Nenhum projeto encontrado com esse filtro.</p>
@@ -56,20 +56,16 @@
         <div class="groups-grid" id="groups-grid"></div>
       </section>
 
-      <section class="process-section section-pad" id="processo" aria-labelledby="process-title">
-        <div class="process-copy"><p class="section-kicker">04 — o caminho</p><h2 id="process-title">O resultado é só<br><em>uma parte.</em></h2><p data-edit="process.description">Antes do projeto pronto, existe um mapa feito de rascunhos, fios, erros bons e pequenas vitórias. O Making Of registra esse caminho para que outra pessoa possa começar de onde a gente parou.</p><a class="button button-dark" href="#projetos">Conhecer os processos <span>↘</span></a></div>
-        <div class="process-steps" aria-label="Etapas do processo"><div class="process-step"><span>01</span><strong>imaginar</strong><p>Uma pergunta abre espaço para várias possibilidades.</p></div><div class="process-step active"><span>02</span><strong>experimentar</strong><p>O protótipo ajuda a ideia a encontrar a realidade.</p></div><div class="process-step"><span>03</span><strong>compartilhar</strong><p>O aprendizado cresce quando vira história.</p></div></div>
-      </section>
-
-      <section class="about-section section-pad" id="sobre" aria-labelledby="about-title"><div><p class="section-kicker">05 — sobre a fecart</p><h2 id="about-title">Tecnologia com<br><em>jeito de gente.</em></h2></div><div class="about-text"><p data-edit="about.description">A Fecart reúne estudantes que aprendem criando. Cada grupo transforma conceitos de eletrônica, programação e mecânica em projetos concretos — e transforma cada tentativa em conhecimento compartilhado.</p><a class="text-link" href="mailto:fecart@example.com">Fale com a gente <span>→</span></a></div></section>
+      <section class="about-section section-pad" id="sobre" aria-labelledby="about-title"><div><p class="section-kicker">04 — sobre a fecart</p><h2 id="about-title">Tecnologia com<br><em>jeito de gente.</em></h2></div><div class="about-text"><p data-edit="about.description">A Fecart reúne estudantes que aprendem criando. Cada grupo transforma conceitos de eletrônica, programação e mecânica em projetos concretos — e transforma cada tentativa em conhecimento compartilhado.</p><a class="text-link" href="mailto:fecart@example.com">Fale com a gente <span>→</span></a></div></section>
     </main>
 
     <footer class="site-footer section-pad"><div class="footer-top"><a class="brand brand-light" href="#topo"><span class="brand-mark">F</span><span>fecart</span></a><p>um laboratório vivo de robótica<br>e aprendizagem.</p><a class="back-top" href="#topo">voltar ao topo ↑</a></div><div class="footer-bottom"><span>© 2026 Fecart</span><span>feito com curiosidade</span></div></footer>
   </div>
 
   <div class="modal-backdrop" id="project-modal" hidden><article class="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" id="modal-close" type="button" aria-label="Fechar projeto">×</button><div id="modal-content"></div></article></div>
-  <aside class="editor-panel" id="editor-panel" hidden aria-labelledby="editor-title"><div class="editor-header"><div><p class="section-kicker">modo de manutenção</p><h2 id="editor-title">Editar Fecart</h2></div><button class="modal-close" id="editor-close" type="button" aria-label="Fechar editor">×</button></div><p class="editor-explain">Altere textos e imagens localmente. Exporte o JSON para publicar as mudanças no repositório.</p><div id="editor-fields"></div><div class="editor-actions"><button class="button button-primary" id="editor-export" type="button">Exportar JSON</button><button class="button button-ghost" id="editor-reset" type="button">Restaurar</button></div><p class="editor-status" id="editor-status" role="status"></p></aside>
+  <aside class="editor-panel" id="editor-panel" hidden aria-labelledby="editor-title"><div class="editor-header"><div><p class="section-kicker">modo de manutenção</p><h2 id="editor-title">Área reservada</h2></div><button class="modal-close" id="editor-close" type="button" aria-label="Fechar área de manutenção">×</button></div><p class="editor-explain">Código de manutenção ativo. Adicione ou edite projetos e salve no banco. O painel só abre com Ctrl + Shift + \\.</p><div id="editor-fields"></div><div class="editor-actions"><button class="button button-primary" id="editor-save-db" type="button">Salvar no banco</button><button class="button button-ghost" id="editor-export" type="button">Exportar JSON</button><button class="button button-ghost" id="editor-reset" type="button">Restaurar</button></div><p class="editor-status" id="editor-status" role="status"></p></aside>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/supabase-config.js"></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>
