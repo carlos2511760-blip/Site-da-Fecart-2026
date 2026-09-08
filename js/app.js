@@ -16,6 +16,15 @@
   const apiHeaders = () => ({ apikey: supabase.anonKey || '', Authorization: `Bearer ${supabase.anonKey || ''}`, 'Content-Type': 'application/json' });
   const groupById = id => data.groups.find(group => group.id === id) || { name: 'Grupo não definido' };
   const imageHTML = (src, alt, className = 'project-image') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy">` : `<div class="${className} placeholder" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
+  function mergeGroup(base, current) {
+    const result = structuredClone(base || {});
+    Object.assign(result, current || {});
+    result.project = { ...(base?.project || {}), ...(current?.project || {}) };
+    const baseMembers = base?.members || [], currentMembers = current?.members || [];
+    result.members = Array.from({ length: Math.max(baseMembers.length, currentMembers.length) }, (_, index) => ({ ...(baseMembers[index] || {}), ...(currentMembers[index] || {}) }));
+    result.gallery = (current?.gallery?.length ? current.gallery : (base?.gallery || [])).map((item, index) => ({ ...(base?.gallery?.[index] || {}), ...(item || {}) }));
+    return result;
+  }
   const readLiked = () => { try { return JSON.parse(localStorage.getItem(LIKED_KEY) || '[]'); } catch { return []; } };
 
   async function loadData() {
@@ -25,6 +34,7 @@
     const draft = localStorage.getItem(STORAGE_KEY);
     const parsedDraft = draft ? JSON.parse(draft) : null;
     data = parsedDraft && parsedDraft.contentVersion === CONTENT_VERSION ? parsedDraft : structuredClone(initialData);
+    data.groups = (data.groups || initialData.groups).map((group, index) => mergeGroup(initialData.groups[index], group));
     data.contentVersion = CONTENT_VERSION;
     if (new URLSearchParams(location.search).get('tema') === 'verde') data.site.theme = { paper: '#eef4ec', 'paper-2': '#dcebdc', ink: '#18352a', muted: '#567064', line: '#b8cdbd', tomato: '#2d8a57', 'tomato-dark': '#1f6d43', leaf: '#286b4e', sun: '#a9c95b', night: '#153127', white: '#f8fcf7' };
     if (supabase.url && supabase.anonKey) {
@@ -37,7 +47,7 @@
         const groupsResponse = await fetch(apiUrl('fecart_group_content?select=group_id,content'), { headers: apiHeaders() });
         if (groupsResponse.ok) {
           const groupRows = await groupsResponse.json();
-          groupRows.forEach(row => { const index = data.groups.findIndex(group => group.id === row.group_id); if (index >= 0 && row.content) data.groups[index] = row.content; });
+          groupRows.forEach(row => { const index = data.groups.findIndex(group => group.id === row.group_id); if (index >= 0 && row.content) data.groups[index] = mergeGroup(data.groups[index], row.content); });
         }
         const likesResponse = await fetch(apiUrl('fecart_project_likes?select=project_id,likes_count'), { headers: apiHeaders() });
         if (likesResponse.ok) (await likesResponse.json()).forEach(row => { likes[row.project_id] = row.likes_count; });
@@ -104,7 +114,7 @@
   }
 
   function setByPath(path, value) { const [root, key] = path.split('.'); if (!data.site[root]) data.site[root] = {}; data.site[root][key] = value; }
-  function editorField(label, path, value, type = 'textarea') { return `<div class="editor-field"><label>${label}</label>${type === 'textarea' ? `<textarea data-path="${path}">${escapeHTML(value || '')}</textarea>` : `<input ${type === 'color' ? 'type="color"' : ''} data-path="${path}" value="${escapeHTML(value || '')}">`}</div>`; }
+  function editorField(label, path, value, type = 'textarea') { const media = value && /(?:photo|image|logo|Poster|poster)/.test(path) ? `<img class="editor-image-preview" src="${escapeHTML(value)}" alt="Prévia de ${escapeHTML(label)}" loading="lazy" onerror="this.hidden=true">` : ''; return `<div class="editor-field"><label>${label}</label>${type === 'textarea' ? `<textarea data-path="${path}">${escapeHTML(value || '')}</textarea>` : `<input ${type === 'color' ? 'type="color"' : ''} data-path="${path}" value="${escapeHTML(value || '')}">`}${media}</div>`; }
   function editorUpload(label, path, accept) { return `<div class="editor-field editor-upload"><label>${label}</label><input type="file" accept="${accept}" data-upload-path="${path}"></div>`; }
   function editorGroupField(path, value) { return `<div class="editor-field"><label>Grupo</label><select data-path="${path}">${data.groups.map(group => `<option value="${escapeHTML(group.id)}" ${group.id === value ? 'selected' : ''}>${escapeHTML(group.name)}</option>`).join('')}</select></div>`; }
   function renderEditor() {
