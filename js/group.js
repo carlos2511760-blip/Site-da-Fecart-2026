@@ -15,6 +15,8 @@
     clearTimeout(card.previewTimer);
     const video = card.querySelector('.member-video');
     if (video) { video.pause(); video.currentTime = 0; }
+    const frame = card.querySelector('.member-video-frame');
+    if (frame) frame.src = 'about:blank';
     card.classList.remove('is-previewing');
     card.setAttribute('aria-label', card.dataset.memberLabel || 'Integrante');
   }
@@ -23,9 +25,11 @@
     if (!card || !card.querySelector('.member-video')) return;
     $$('.member-card.is-previewing').filter(other => other !== card).forEach(stopPreview);
     const video = card.querySelector('.member-video');
+    const frame = card.querySelector('.member-video-frame');
     card.classList.add('is-previewing');
     card.setAttribute('aria-label', `${card.dataset.memberLabel || 'Integrante'} — prévia em vídeo`);
-    video.play().catch(() => {});
+    if (video) video.play().catch(() => {});
+    if (frame && frame.dataset.src) frame.src = frame.dataset.src;
   }
 
   function bindMemberPreviews() {
@@ -51,8 +55,10 @@
   function memberMarkup(member, index) {
     const name = member.name || `Integrante ${index + 1}`;
     const hasVideo = Boolean(member.previewVideo);
-    const visual = member.photo ? image(member.photo, `Foto de ${name}`, 'member-photo') : placeholderMedia(`Integrante ${index + 1}`, 'member');
-    const video = hasVideo ? `<video class="member-video" src="${escapeHTML(member.previewVideo)}"${member.videoPoster ? ` poster="${escapeHTML(member.videoPoster)}"` : ''} muted loop playsinline preload="none" aria-hidden="true"></video><span class="preview-badge" aria-hidden="true">▶ prévia</span>` : '';
+    const youtubeId = hasVideo ? (member.previewVideo.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/) || [])[1] : '';
+    const poster = member.videoPoster || (youtubeId ? `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg` : '');
+    const visual = member.photo ? image(member.photo, `Foto de ${name}`, 'member-photo') : (poster ? image(poster, `Capa da prévia de ${name}`, 'member-photo') : placeholderMedia(`Integrante ${index + 1}`, 'member'));
+    const video = hasVideo ? (youtubeId ? `<iframe class="member-video-frame" data-src="https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeId}&playsinline=1&rel=0" title="Prévia em vídeo de ${escapeHTML(name)}" allow="autoplay; encrypted-media" loading="lazy" aria-hidden="true"></iframe>` : `<video class="member-video" src="${escapeHTML(member.previewVideo)}"${member.videoPoster ? ` poster="${escapeHTML(member.videoPoster)}"` : ''} muted loop playsinline preload="none" aria-hidden="true"></video>` ) + '<span class="preview-badge" aria-hidden="true">▶ prévia</span>' : '';
     return `<article class="member-card${hasVideo ? ' has-preview' : ''}"${hasVideo ? ` data-preview-video="true" tabindex="0" role="button" data-member-label="${escapeHTML(name)}"` : ''}> <div class="member-media">${visual}${video}</div><h3>${escapeHTML(name)}</h3><p>${escapeHTML(member.role || 'Função a definir')}</p>${hasVideo ? '<small class="preview-hint">passe ou toque para ver</small>' : ''}</article>`;
   }
 
