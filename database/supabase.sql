@@ -90,3 +90,24 @@ grant select on public.fecart_projects to anon, authenticated;
 grant select on public.fecart_project_likes to anon, authenticated;
 grant insert, update on public.fecart_projects to anon, authenticated;
 grant delete on public.fecart_projects to anon, authenticated;
+
+
+-- Conteúdo dos grupos, incluindo integrantes, vídeos de prévia e capas.
+create table if not exists public.fecart_group_content (
+  group_id text primary key,
+  content jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+drop trigger if exists fecart_group_content_touch on public.fecart_group_content;
+create trigger fecart_group_content_touch before update on public.fecart_group_content
+for each row execute function public.fecart_touch_updated_at();
+
+alter table public.fecart_group_content enable row level security;
+drop policy if exists "public can read group content" on public.fecart_group_content;
+create policy "public can read group content" on public.fecart_group_content for select using (true);
+drop policy if exists "public can insert group content" on public.fecart_group_content;
+create policy "public can insert group content" on public.fecart_group_content for insert with check (true);
+drop policy if exists "public can update group content" on public.fecart_group_content;
+create policy "public can update group content" on public.fecart_group_content for update using (true) with check (true);
+grant select, insert, update on public.fecart_group_content to anon, authenticated;
