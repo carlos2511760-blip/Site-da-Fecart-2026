@@ -14,6 +14,15 @@
   const editorField = (label, key, value, multiline = false) => `<div class="editor-field"><label>${label}</label>${multiline ? `<textarea data-group-field="${key}">${escapeHTML(value || '')}</textarea>` : `<input data-group-field="${key}" value="${escapeHTML(value || '')}">`}</div>`;
   const editorUpload = (label, key, accept) => `<div class="editor-field editor-upload"><label>${label}</label><input type="file" accept="${accept}" data-group-upload="${key}"></div>`;
 
+  function mergeGroup(base, current) {
+    const result = structuredClone(base || {});
+    Object.assign(result, current || {});
+    result.project = { ...(base?.project || {}), ...(current?.project || {}) };
+    const baseMembers = base?.members || [], currentMembers = current?.members || [];
+    result.members = Array.from({ length: Math.max(baseMembers.length, currentMembers.length) }, (_, index) => ({ ...(baseMembers[index] || {}), ...(currentMembers[index] || {}) }));
+    result.gallery = (current?.gallery?.length ? current.gallery : (base?.gallery || [])).map((item, index) => ({ ...(base?.gallery?.[index] || {}), ...(item || {}) }));
+    return result;
+  }
   function stopPreview(card) {
     if (!card) return;
     clearTimeout(card.previewTimer);
