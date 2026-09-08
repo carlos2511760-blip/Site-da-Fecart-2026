@@ -1,0 +1,18 @@
+/* Proteções comuns para telas pequenas */
+@media (max-width:560px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .site-header{gap:14px;padding-left:18px;padding-right:18px}
+  .group-page .site-header{gap:10px}
+  .group-page .back-link{margin-left:auto;white-space:nowrap;font-size:11px}
+  .group-description,.project-detail,.block-heading,.section-heading{min-width:0;max-width:100%}
+  .group-description,.project-detail p,.block-heading>p{overflow-wrap:anywhere}
+  .member-card{min-width:0}
+  .member-card h3,.member-card p{overflow-wrap:anywhere}
+  .project-main-image,.gallery-image,.gallery-video{display:block;width:100%;max-width:100%;height:auto;object-fit:cover}
+  .gallery-video{max-height:70vh}
+  .process-gallery figure{min-width:0}
+  .social-pin{min-height:40px}
+  .editor-panel{padding:22px 18px}
+  .editor-actions{gap:8px}
+  .editor-actions .button{min-height:44px}
+}
