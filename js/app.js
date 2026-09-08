@@ -3,7 +3,7 @@
   const DATA_URL = 'data/content.json';
   const STORAGE_KEY = 'fecart-content-draft';
   const LIKED_KEY = 'fecart-liked-projects';
-  const CONTENT_VERSION = 4;
+  const CONTENT_VERSION = 6;
   const supabase = window.FECART_SUPABASE || {};
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -64,9 +64,11 @@
     $('#projects-grid').innerHTML = projects.map(project => {
       const group = groupById(project.groupId);
       const likeCount = likes[project.dbId] || likes[project.id] || project.likes || 0;
-      return `<article class="project-card" tabindex="0" role="button" data-project="${escapeHTML(project.id)}" aria-label="Abrir projeto ${escapeHTML(project.title)}">${imageHTML(project.thumbnail || project.coverImage, project.title)}<div class="project-card-body"><div class="project-meta"><span>${escapeHTML(project.year || 'sem data')}</span><span>${escapeHTML(group.name)}</span></div><h3>${escapeHTML(project.title)}</h3><p>${escapeHTML(project.shortDescription)}</p><div class="project-footer"><div class="tag-list">${(project.tags || []).slice(0, 2).map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}</div><span class="project-arrow" aria-hidden="true">↗</span></div><div class="card-like-count">♡ ${likeCount} curtida${likeCount === 1 ? '' : 's'}</div></div></article>`;
+      return `<article class="project-card reveal-card" tabindex="0" role="button" data-project="${escapeHTML(project.id)}" aria-label="Abrir projeto ${escapeHTML(project.title)}" style="--reveal-delay:${Math.min(data.projects.indexOf(project), 7) * 70}ms">${imageHTML(project.thumbnail || project.coverImage, project.title)}<div class="project-card-body"><div class="project-meta"><span>${escapeHTML(project.year || 'sem data')}</span><span>${escapeHTML(group.name)}</span></div><h3>${escapeHTML(project.title)}</h3><p>${escapeHTML(project.shortDescription)}</p><div class="project-footer"><div class="tag-list">${(project.tags || []).slice(0, 2).map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}</div><span class="project-arrow" aria-hidden="true">↗</span></div><div class="card-like-count">♡ ${likeCount} curtida${likeCount === 1 ? '' : 's'}</div></div></article>`;
     }).join('');
     $$('.project-card').forEach(card => { card.addEventListener('click', () => openProject(card.dataset.project)); card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openProject(card.dataset.project); } }); });
+    const revealObserver = 'IntersectionObserver' in window ? new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.transitionDelay = entry.target.style.getPropertyValue('--reveal-delay'); entry.target.classList.add('is-visible'); revealObserver.unobserve(entry.target); } }), { threshold: .12 }) : null;
+    $$('.reveal-card').forEach(card => revealObserver ? revealObserver.observe(card) : card.classList.add('is-visible'));
   }
 
   function renderGroups() {

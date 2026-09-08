@@ -1,5 +1,5 @@
 {
-  "contentVersion": 4,
+  "contentVersion": 6,
   "site": {
     "hero": {
       "title": "Ideias que nos transformam.",
@@ -13,10 +13,302 @@
     }
   },
   "groups": [
-    { "id": "alecrins-dourados", "name": "Alecrins dourados", "description": "", "accent": "#e8b63f", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] },
-    { "id": "faotasticos", "name": "Fãotásticos", "description": "", "accent": "#e05b3f", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] },
-    { "id": "sabor-robotica", "name": "SabOr robótica", "description": "", "accent": "#496453", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] },
-    { "id": "acerto-404", "name": "Acerto 404", "description": "", "accent": "#b8a3d0", "logo": "", "project": { "title": "", "description": "", "details": "" }, "members": [], "gallery": [] }
+    {
+      "id": "alecrins-dourados",
+      "name": "Alecrins dourados",
+      "description": "Imagem e conteúdo demonstrativos para visualizar a montagem da página. Substitua pelos registros reais no modo de manutenção.",
+      "accent": "#e8b63f",
+      "logo": "",
+      "project": {
+        "title": "Projeto demonstrativo em construção",
+        "description": "Este conteúdo é apenas uma referência visual para testar a composição da página.",
+        "details": "Substitua este texto e as imagens pelos dados reais do grupo.",
+        "image": "assets/demo-robot-project.jpg",
+        "demo": true
+      },
+      "members": [
+        {
+          "name": "Integrante 1",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 2",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 3",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 4",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 5",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        }
+      ],
+      "gallery": [
+        {
+          "type": "photo",
+          "src": "assets/demo-robot-project.jpg",
+          "caption": "Imagem demonstrativa do projeto",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-making-of.jpg",
+          "caption": "Imagem demonstrativa do processo",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-video-poster.jpg",
+          "caption": "Capa demonstrativa de vídeo",
+          "demo": true
+        }
+      ]
+    },
+    {
+      "id": "faotasticos",
+      "name": "Fãotásticos",
+      "description": "Imagem e conteúdo demonstrativos para visualizar a montagem da página. Substitua pelos registros reais no modo de manutenção.",
+      "accent": "#e05b3f",
+      "logo": "",
+      "project": {
+        "title": "Projeto demonstrativo em construção",
+        "description": "Este conteúdo é apenas uma referência visual para testar a composição da página.",
+        "details": "Substitua este texto e as imagens pelos dados reais do grupo.",
+        "image": "assets/demo-robot-project.jpg",
+        "demo": true
+      },
+      "members": [
+        {
+          "name": "Integrante 1",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 2",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 3",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 4",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 5",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        }
+      ],
+      "gallery": [
+        {
+          "type": "photo",
+          "src": "assets/demo-robot-project.jpg",
+          "caption": "Imagem demonstrativa do projeto",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-making-of.jpg",
+          "caption": "Imagem demonstrativa do processo",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-video-poster.jpg",
+          "caption": "Capa demonstrativa de vídeo",
+          "demo": true
+        }
+      ]
+    },
+    {
+      "id": "sabor-robotica",
+      "name": "SabOr robótica",
+      "description": "Imagem e conteúdo demonstrativos para visualizar a montagem da página. Substitua pelos registros reais no modo de manutenção.",
+      "accent": "#496453",
+      "logo": "",
+      "project": {
+        "title": "Projeto demonstrativo em construção",
+        "description": "Este conteúdo é apenas uma referência visual para testar a composição da página.",
+        "details": "Substitua este texto e as imagens pelos dados reais do grupo.",
+        "image": "assets/demo-robot-project.jpg",
+        "demo": true
+      },
+      "members": [
+        {
+          "name": "Integrante 1",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 2",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 3",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 4",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        }
+      ],
+      "gallery": [
+        {
+          "type": "photo",
+          "src": "assets/demo-robot-project.jpg",
+          "caption": "Imagem demonstrativa do projeto",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-making-of.jpg",
+          "caption": "Imagem demonstrativa do processo",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-video-poster.jpg",
+          "caption": "Capa demonstrativa de vídeo",
+          "demo": true
+        }
+      ]
+    },
+    {
+      "id": "acerto-404",
+      "name": "Acerto 404",
+      "description": "Imagem e conteúdo demonstrativos para visualizar a montagem da página. Substitua pelos registros reais no modo de manutenção.",
+      "accent": "#b8a3d0",
+      "logo": "",
+      "project": {
+        "title": "Projeto demonstrativo em construção",
+        "description": "Este conteúdo é apenas uma referência visual para testar a composição da página.",
+        "details": "Substitua este texto e as imagens pelos dados reais do grupo.",
+        "image": "assets/demo-robot-project.jpg",
+        "demo": true
+      },
+      "members": [
+        {
+          "name": "Integrante 1",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 2",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 3",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 4",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-2.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        },
+        {
+          "name": "Integrante 5",
+          "role": "Função demonstrativa",
+          "photo": "assets/demo-member-1.jpg",
+          "previewVideo": "",
+          "videoPoster": "",
+          "demo": true
+        }
+      ],
+      "gallery": [
+        {
+          "type": "photo",
+          "src": "assets/demo-robot-project.jpg",
+          "caption": "Imagem demonstrativa do projeto",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-making-of.jpg",
+          "caption": "Imagem demonstrativa do processo",
+          "demo": true
+        },
+        {
+          "type": "photo",
+          "src": "assets/demo-video-poster.jpg",
+          "caption": "Capa demonstrativa de vídeo",
+          "demo": true
+        }
+      ]
+    }
   ],
   "projects": []
 }
