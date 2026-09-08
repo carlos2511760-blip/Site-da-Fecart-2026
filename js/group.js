@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   const $ = selector => document.querySelector(selector);
+  const $$ = selector => [...document.querySelectorAll(selector)];
   const escapeHTML = (value = '') => String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]));
   const image = (src, alt, className = '') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy">` : `<div class="image-placeholder ${className}" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
   const placeholderMedia = (label, type = 'photo') => `<div class="media-placeholder ${type}-placeholder" role="img" aria-label="${escapeHTML(label)}"><span>${type === 'video' ? '▶' : 'F'}</span><small>${escapeHTML(label)}</small></div>`;
@@ -9,32 +10,79 @@
   let activeGroup;
   const editorField = (label, key, value, multiline = false) => `<div class="editor-field"><label>${label}</label>${multiline ? `<textarea data-group-field="${key}">${escapeHTML(value || '')}</textarea>` : `<input data-group-field="${key}" value="${escapeHTML(value || '')}">`}</div>`;
 
+  function stopPreview(card) {
+    if (!card) return;
+    clearTimeout(card.previewTimer);
+    const video = card.querySelector('.member-video');
+    if (video) { video.pause(); video.currentTime = 0; }
+    card.classList.remove('is-previewing');
+    card.setAttribute('aria-label', card.dataset.memberLabel || 'Integrante');
+  }
+
+  function startPreview(card) {
+    if (!card || !card.querySelector('.member-video')) return;
+    $$('.member-card.is-previewing').filter(other => other !== card).forEach(stopPreview);
+    const video = card.querySelector('.member-video');
+    card.classList.add('is-previewing');
+    card.setAttribute('aria-label', `${card.dataset.memberLabel || 'Integrante'} — prévia em vídeo`);
+    video.play().catch(() => {});
+  }
+
+  function bindMemberPreviews() {
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    $$('.member-card[data-preview-video]').forEach(card => {
+      card.addEventListener('pointerenter', () => {
+        if (!reducedMotion) card.previewTimer = setTimeout(() => startPreview(card), 240);
+      });
+      card.addEventListener('pointerleave', () => stopPreview(card));
+      card.addEventListener('focusin', () => { if (!reducedMotion) startPreview(card); });
+      card.addEventListener('focusout', event => { if (!card.contains(event.relatedTarget)) stopPreview(card); });
+      card.addEventListener('click', event => {
+        if (event.pointerType === 'touch' || window.matchMedia?.('(hover: none)').matches) {
+          card.classList.contains('is-previewing') ? stopPreview(card) : startPreview(card);
+        }
+      });
+      card.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); card.classList.contains('is-previewing') ? stopPreview(card) : startPreview(card); }
+      });
+    });
+  }
+
+  function memberMarkup(member, index) {
+    const name = member.name || `Integrante ${index + 1}`;
+    const hasVideo = Boolean(member.previewVideo);
+    const visual = member.photo ? image(member.photo, `Foto de ${name}`, 'member-photo') : placeholderMedia(`Integrante ${index + 1}`, 'member');
+    const video = hasVideo ? `<video class="member-video" src="${escapeHTML(member.previewVideo)}"${member.videoPoster ? ` poster="${escapeHTML(member.videoPoster)}"` : ''} muted loop playsinline preload="none" aria-hidden="true"></video><span class="preview-badge" aria-hidden="true">▶ prévia</span>` : '';
+    return `<article class="member-card${hasVideo ? ' has-preview' : ''}"${hasVideo ? ` data-preview-video="true" tabindex="0" role="button" data-member-label="${escapeHTML(name)}"` : ''}> <div class="member-media">${visual}${video}</div><h3>${escapeHTML(name)}</h3><p>${escapeHTML(member.role || 'Função a definir')}</p>${hasVideo ? '<small class="preview-hint">passe ou toque para ver</small>' : ''}</article>`;
+  }
+
   function render(group, projects) {
     activeGroup = group;
     const project = group.projects?.length ? group.projects[0] : (group.project?.title ? group.project : {});
     const memberCount = group.id === 'sabor-robotica' ? 4 : 5;
-    const members = Array.from({ length: memberCount }, (_, index) => group.members?.[index] || { name: `Integrante ${index + 1}`, role: 'Função a definir', photo: '' });
+    const members = Array.from({ length: memberCount }, (_, index) => group.members?.[index] || { name: `Integrante ${index + 1}`, role: 'Função a definir', photo: '', previewVideo: '', videoPoster: '' });
     const gallery = group.gallery?.length ? group.gallery : [{ type: 'photo', caption: 'Foto do processo' }, { type: 'photo', caption: 'Protótipo em teste' }, { type: 'video', caption: 'Vídeo do making of' }];
-    $('#group-content').innerHTML = `<section class="group-hero" style="--accent:${escapeHTML(group.accent || '#e8b63f')}"><div class="group-logo">${image(group.logo, `Logo do grupo ${group.name}`, 'logo-image')}</div><div><p class="section-kicker">grupo Fecart</p><h1>${escapeHTML(group.name)}</h1><p class="group-description">${escapeHTML(group.description || 'Este grupo ainda está preparando sua apresentação.')}</p></div></section><section class="members-section section-block"><div class="block-heading"><p class="section-kicker">quem constrói</p><h2>Pessoas por<br><em>trás da ideia.</em></h2></div><div class="members-grid members-count-${memberCount}">${members.map((member, index) => `<article class="member-card">${member.photo ? image(member.photo, `Foto de ${member.name || `Integrante ${index + 1}`}`, 'member-photo') : placeholderMedia(`Integrante ${index + 1}`, 'member')}<h3>${escapeHTML(member.name || `Integrante ${index + 1}`)}</h3><p>${escapeHTML(member.role || 'Função a definir')}</p></article>`).join('')}</div></section><section class="group-project section-block"><div class="block-heading"><p class="section-kicker">o projeto</p><h2>${escapeHTML(project.title || 'Projeto em construção')}</h2></div><div class="project-detail"><div><div class="project-main-media">${project.image ? image(project.image, `Foto do projeto ${project.title}`, 'project-main-image') : placeholderMedia('Foto principal do projeto')}</div><p>${escapeHTML(project.description || 'A descrição detalhada do projeto será adicionada aqui.')}</p><p>${escapeHTML(project.details || '')}</p></div><div class="project-related">${projects.length ? projects.map(item => `<a href="index.html#projetos" class="related-project"><span>${escapeHTML(item.year || '')}</span><strong>${escapeHTML(item.title)}</strong><small>ver projeto completo ↗</small></a>`).join('') : '<p class="empty-detail">Os projetos deste grupo aparecerão aqui.</p>'}</div></div></section><section class="gallery-section section-block"><div class="block-heading"><p class="section-kicker">por trás de tudo</p><h2>O processo<br><em>em imagens.</em></h2><p>Fotos e vídeos para registrar testes, protótipos, erros, descobertas e todas as etapas que fazem o projeto acontecer.</p></div><div class="process-gallery">${gallery.map(item => `<figure>${item.type === 'video' ? placeholderMedia(item.caption || 'Vídeo do making of', 'video') : item.src ? image(item.src, item.alt || 'Registro do processo', 'gallery-image') : placeholderMedia(item.caption || 'Foto do processo')}<figcaption>${escapeHTML(item.caption || '')}</figcaption></figure>`).join('')}</div></section>`;
+    $('#group-content').innerHTML = `<section class="group-hero" style="--accent:${escapeHTML(group.accent || '#e8b63f')}"><div class="group-logo">${image(group.logo, `Logo do grupo ${group.name}`, 'logo-image')}</div><div><p class="section-kicker">grupo Fecart</p><h1>${escapeHTML(group.name)}</h1><p class="group-description">${escapeHTML(group.description || 'Este grupo ainda está preparando sua apresentação.')}</p></div></section><section class="members-section section-block"><div class="block-heading"><p class="section-kicker">quem constrói</p><h2>Pessoas por<br><em>trás da ideia.</em></h2></div><div class="members-grid members-count-${memberCount}">${members.map(memberMarkup).join('')}</div></section><section class="group-project section-block"><div class="block-heading"><p class="section-kicker">o projeto</p><h2>${escapeHTML(project.title || 'Projeto em construção')}</h2></div><div class="project-detail"><div><div class="project-main-media">${project.image ? image(project.image, `Foto do projeto ${project.title}`, 'project-main-image') : placeholderMedia('Foto principal do projeto')}</div><p>${escapeHTML(project.description || 'A descrição detalhada do projeto será adicionada aqui.')}</p><p>${escapeHTML(project.details || '')}</p></div><div class="project-related">${projects.length ? projects.map(item => `<a href="index.html#projetos" class="related-project"><span>${escapeHTML(item.year || '')}</span><strong>${escapeHTML(item.title)}</strong><small>ver projeto completo ↗</small></a>`).join('') : '<p class="empty-detail">Os projetos deste grupo aparecerão aqui.</p>'}</div></div></section><section class="gallery-section section-block"><div class="block-heading"><p class="section-kicker">por trás de tudo</p><h2>O processo<br><em>em imagens.</em></h2><p>Fotos e vídeos para registrar testes, protótipos, erros, descobertas e todas as etapas que fazem o projeto acontecer.</p></div><div class="process-gallery">${gallery.map(item => `<figure>${item.type === 'video' ? (item.src ? `<video class="gallery-video" src="${escapeHTML(item.src)}" controls preload="metadata"${item.poster ? ` poster="${escapeHTML(item.poster)}"` : ''}></video>` : placeholderMedia(item.caption || 'Vídeo do making of', 'video')) : item.src ? image(item.src, item.alt || 'Registro do processo', 'gallery-image') : placeholderMedia(item.caption || 'Foto do processo')}<figcaption>${escapeHTML(item.caption || '')}</figcaption></figure>`).join('')}</div></section>`;
     document.title = `${group.name} · Fecart`;
+    bindMemberPreviews();
   }
 
   function renderEditor() {
     const group = activeGroup;
     const project = group.project || {};
     const memberCount = group.id === 'sabor-robotica' ? 4 : 5;
-    let fields = `${editorField('Nome do grupo', 'name', group.name)}${editorField('Cor de destaque', 'accent', group.accent, false)}${editorField('Logo (URL ou caminho)', 'logo', group.logo)}${editorField('Descrição do grupo', 'description', group.description, true)}<p class="section-kicker">integrantes</p>`;
-    for (let index = 0; index < memberCount; index += 1) { const member = group.members?.[index] || {}; fields += `<div class="editor-group"><strong>Integrante ${index + 1}</strong>${editorField('Nome', `member:${index}:name`, member.name)}${editorField('Função', `member:${index}:role`, member.role)}${editorField('Foto (URL ou caminho)', `member:${index}:photo`, member.photo)}</div>`; }
+    let fields = `${editorField('Nome do grupo', 'name', group.name)}${editorField('Cor de destaque', 'accent', group.accent)}${editorField('Logo (URL ou caminho)', 'logo', group.logo)}${editorField('Descrição do grupo', 'description', group.description, true)}<p class="section-kicker">integrantes</p>`;
+    for (let index = 0; index < memberCount; index += 1) { const member = group.members?.[index] || {}; fields += `<div class="editor-group"><strong>Integrante ${index + 1}</strong>${editorField('Nome', `member:${index}:name`, member.name)}${editorField('Função', `member:${index}:role`, member.role)}${editorField('Foto (URL ou caminho)', `member:${index}:photo`, member.photo)}${editorField('Vídeo de prévia (URL ou caminho)', `member:${index}:previewVideo`, member.previewVideo)}${editorField('Capa do vídeo (URL ou caminho)', `member:${index}:videoPoster`, member.videoPoster)}</div>`; }
     fields += `<p class="section-kicker">projeto</p>${editorField('Nome do projeto', 'project:title', project.title)}${editorField('Foto principal (URL ou caminho)', 'project:image', project.image)}${editorField('Descrição curta', 'project:description', project.description, true)}${editorField('Descrição detalhada', 'project:details', project.details, true)}<p class="section-kicker">making of</p>`;
     const gallery = group.gallery || [];
-    for (let index = 0; index < 6; index += 1) { const item = gallery[index] || {}; fields += `<div class="editor-group"><strong>Registro ${index + 1}</strong>${editorField('Tipo (photo ou video)', `gallery:${index}:type`, item.type || 'photo')}${editorField('Imagem ou vídeo (URL ou caminho)', `gallery:${index}:src`, item.src)}${editorField('Legenda', `gallery:${index}:caption`, item.caption)}</div>`; }
+    for (let index = 0; index < 6; index += 1) { const item = gallery[index] || {}; fields += `<div class="editor-group"><strong>Registro ${index + 1}</strong>${editorField('Tipo (photo ou video)', `gallery:${index}:type`, item.type || 'photo')}${editorField('Imagem ou vídeo (URL ou caminho)', `gallery:${index}:src`, item.src)}${editorField('Capa do vídeo (opcional)', `gallery:${index}:poster`, item.poster)}${editorField('Legenda', `gallery:${index}:caption`, item.caption)}</div>`; }
     $('#group-editor-fields').innerHTML = fields;
     $$('[data-group-field]').forEach(field => field.addEventListener('input', () => updateGroupField(field.dataset.groupField, field.value)));
   }
-  const $$ = selector => [...document.querySelectorAll(selector)];
-  function updateGroupField(key, value) { const parts = key.split(':'); if (parts[0] === 'member') { activeGroup.members ||= []; activeGroup.members[Number(parts[1])] ||= {}; activeGroup.members[Number(parts[1])][parts[2]] = value; } else if (parts[0] === 'project') { activeGroup.project ||= {}; activeGroup.project[parts[1]] = value; } else if (parts[0] === 'gallery') { activeGroup.gallery ||= []; activeGroup.gallery[Number(parts[1])] ||= {}; activeGroup.gallery[Number(parts[1])][parts[2]] = value; } else activeGroup[parts[0]] = value; data.contentVersion = 4; localStorage.setItem('fecart-content-draft', JSON.stringify(data)); const projects = data.projects.filter(item => item.groupId === activeGroup.id); render(activeGroup, projects); $('#group-editor-status').textContent = 'Alteração salva neste navegador.'; }
+
+  function updateGroupField(key, value) { const parts = key.split(':'); if (parts[0] === 'member') { activeGroup.members ||= []; activeGroup.members[Number(parts[1])] ||= {}; activeGroup.members[Number(parts[1])][parts[2]] = value; } else if (parts[0] === 'project') { activeGroup.project ||= {}; activeGroup.project[parts[1]] = value; } else if (parts[0] === 'gallery') { activeGroup.gallery ||= []; activeGroup.gallery[Number(parts[1])] ||= {}; activeGroup.gallery[Number(parts[1])][parts[2]] = value; } else activeGroup[parts[0]] = value; data.contentVersion = 5; localStorage.setItem('fecart-content-draft', JSON.stringify(data)); const projects = data.projects.filter(item => item.groupId === activeGroup.id); render(activeGroup, projects); $('#group-editor-status').textContent = 'Alteração salva neste navegador.'; }
   function resetGroup() { localStorage.removeItem('fecart-content-draft'); location.reload(); }
-  function initEditor() { $('#group-editor-close').addEventListener('click', () => { $('#group-editor-panel').hidden = true; }); $('#group-editor-save').addEventListener('click', () => { data.contentVersion = 4; localStorage.setItem('fecart-content-draft', JSON.stringify(data)); $('#group-editor-status').textContent = 'Alterações salvas neste navegador.'; }); $('#group-editor-reset').addEventListener('click', resetGroup); document.addEventListener('keydown', event => { const maintenanceKey = event.key === '\\' || event.key === '|' || event.code === 'Backslash' || event.code === 'IntlBackslash'; if (event.ctrlKey && event.shiftKey && maintenanceKey) { event.preventDefault(); const panel = $('#group-editor-panel'); panel.hidden = !panel.hidden; if (!panel.hidden) { renderEditor(); $('#group-editor-fields input')?.focus(); } } if (event.key === 'Escape') $('#group-editor-panel').hidden = true; }); }
-  async function init() { try { const response = await fetch('data/content.json'); const initial = await response.json(); data = initial; try { const draft = JSON.parse(localStorage.getItem('fecart-content-draft') || 'null'); if (draft && draft.contentVersion === initial.contentVersion) data = draft; } catch {} const group = data.groups.find(item => item.id === query) || data.groups[0]; render(group, data.projects.filter(item => item.groupId === group.id)); initEditor(); } catch { $('#group-content').innerHTML = '<p class="empty-detail">Não foi possível carregar este grupo agora.</p>'; } }
+  function initEditor() { $('#group-editor-close').addEventListener('click', () => { $('#group-editor-panel').hidden = true; }); $('#group-editor-save').addEventListener('click', () => { data.contentVersion = 5; localStorage.setItem('fecart-content-draft', JSON.stringify(data)); $('#group-editor-status').textContent = 'Alterações salvas neste navegador.'; }); $('#group-editor-reset').addEventListener('click', resetGroup); document.addEventListener('keydown', event => { const maintenanceKey = event.key === '\\' || event.key === '|' || event.code === 'Backslash' || event.code === 'IntlBackslash'; if (event.ctrlKey && event.shiftKey && maintenanceKey) { event.preventDefault(); const panel = $('#group-editor-panel'); panel.hidden = !panel.hidden; if (!panel.hidden) { renderEditor(); $('#group-editor-fields input')?.focus(); } } if (event.key === 'Escape') $('#group-editor-panel').hidden = true; }); }
+  async function init() { try { const response = await fetch('data/content.json'); const initial = await response.json(); data = initial; try { const draft = JSON.parse(localStorage.getItem('fecart-content-draft') || 'null'); if (draft && draft.contentVersion >= initial.contentVersion) data = draft; } catch {} const group = data.groups.find(item => item.id === query) || data.groups[0]; render(group, data.projects.filter(item => item.groupId === group.id)); initEditor(); } catch { $('#group-content').innerHTML = '<p class="empty-detail">Não foi possível carregar este grupo agora.</p>'; } }
   init();
 })();
