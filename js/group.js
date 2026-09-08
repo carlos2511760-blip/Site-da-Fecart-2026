@@ -12,6 +12,7 @@
   const apiUrl = path => `${supabase.url || ''}/rest/v1/${path}`;
   const apiHeaders = () => ({ apikey: supabase.anonKey || '', Authorization: `Bearer ${supabase.anonKey || ''}`, 'Content-Type': 'application/json' });
   const editorField = (label, key, value, multiline = false) => `<div class="editor-field"><label>${label}</label>${multiline ? `<textarea data-group-field="${key}">${escapeHTML(value || '')}</textarea>` : `<input data-group-field="${key}" value="${escapeHTML(value || '')}">`}</div>`;
+  const editorUpload = (label, key, accept) => `<div class="editor-field editor-upload"><label>${label}</label><input type="file" accept="${accept}" data-group-upload="${key}"></div>`;
 
   function stopPreview(card) {
     if (!card) return;
@@ -81,12 +82,31 @@
     const project = group.project || {};
     const memberCount = group.id === 'sabor-robotica' ? 4 : 5;
     let fields = `${editorField('Nome do grupo', 'name', group.name)}${editorField('Cor de destaque', 'accent', group.accent)}${editorField('Logo (URL ou caminho)', 'logo', group.logo)}${editorField('Descrição do grupo', 'description', group.description, true)}<p class="section-kicker">integrantes</p>`;
-    for (let index = 0; index < memberCount; index += 1) { const member = group.members?.[index] || {}; fields += `<div class="editor-group"><strong>Integrante ${index + 1}</strong>${editorField('Nome', `member:${index}:name`, member.name)}${editorField('Função', `member:${index}:role`, member.role)}${editorField('Foto (URL ou caminho)', `member:${index}:photo`, member.photo)}${editorField('Vídeo de prévia (URL ou caminho)', `member:${index}:previewVideo`, member.previewVideo)}${editorField('Capa do vídeo (URL ou caminho)', `member:${index}:videoPoster`, member.videoPoster)}</div>`; }
+    for (let index = 0; index < memberCount; index += 1) { const member = group.members?.[index] || {}; fields += `<div class="editor-group"><strong>Integrante ${index + 1}</strong>${editorField('Nome', `member:${index}:name`, member.name)}${editorField('Função', `member:${index}:role`, member.role)}${editorField('Foto (URL ou caminho)', `member:${index}:photo`, member.photo)}${editorField('Vídeo de prévia (URL ou caminho)', `member:${index}:previewVideo`, member.previewVideo)}${editorUpload('Ou envie a prévia do computador', `member:${index}:previewVideo`, 'video/mp4,video/webm,video/quicktime')}${editorField('Capa do vídeo (URL ou caminho)', `member:${index}:videoPoster`, member.videoPoster)}${editorUpload('Ou envie a capa do computador', `member:${index}:videoPoster`, 'image/jpeg,image/png,image/webp')}</div>`; }
     fields += `<p class="section-kicker">projeto</p>${editorField('Nome do projeto', 'project:title', project.title)}${editorField('Foto principal (URL ou caminho)', 'project:image', project.image)}${editorField('Descrição curta', 'project:description', project.description, true)}${editorField('Descrição detalhada', 'project:details', project.details, true)}<p class="section-kicker">making of</p>`;
     const gallery = group.gallery || [];
     for (let index = 0; index < 6; index += 1) { const item = gallery[index] || {}; fields += `<div class="editor-group"><strong>Registro ${index + 1}</strong>${editorField('Tipo (photo ou video)', `gallery:${index}:type`, item.type || 'photo')}${editorField('Imagem ou vídeo (URL ou caminho)', `gallery:${index}:src`, item.src)}${editorField('Capa do vídeo (opcional)', `gallery:${index}:poster`, item.poster)}${editorField('Legenda', `gallery:${index}:caption`, item.caption)}</div>`; }
     $('#group-editor-fields').innerHTML = fields;
     $$('[data-group-field]').forEach(field => field.addEventListener('input', () => updateGroupField(field.dataset.groupField, field.value)));
+    $$('[data-group-upload]').forEach(field => field.addEventListener('change', () => uploadGroupFile(field)));
+  }
+
+  async function uploadGroupFile(field) {
+    const file = field.files?.[0];
+    if (!file || !supabase.url || !supabase.anonKey) return;
+    if (file.size > 80 * 1024 * 1024) { $('#group-editor-status').textContent = 'O arquivo deve ter no máximo 80 MB.'; field.value = ''; return; }
+    const extension = (file.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const path = `${activeGroup.id}/${field.dataset.groupUpload.replaceAll(':', '-')}-${Date.now()}.${extension}`;
+    field.disabled = true;
+    $('#group-editor-status').textContent = 'Enviando arquivo para o armazenamento público...';
+    try {
+      const response = await fetch(`${supabase.url}/storage/v1/object/fecart-media/${path}`, { method: 'POST', headers: { apikey: supabase.anonKey, Authorization: `Bearer ${supabase.anonKey}`, 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, body: file });
+      if (!response.ok) throw new Error(`Upload HTTP ${response.status}`);
+      const publicUrl = `${supabase.url}/storage/v1/object/public/fecart-media/${path}`;
+      updateGroupField(field.dataset.groupUpload, publicUrl);
+      $('#group-editor-status').textContent = 'Arquivo enviado e salvo para todos.';
+    } catch (error) { $('#group-editor-status').textContent = 'Não foi possível enviar o arquivo.'; console.warn(error); }
+    field.disabled = false;
   }
 
   async function saveGroupRemote() {

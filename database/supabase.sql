@@ -111,3 +111,15 @@ create policy "public can insert group content" on public.fecart_group_content f
 drop policy if exists "public can update group content" on public.fecart_group_content;
 create policy "public can update group content" on public.fecart_group_content for update using (true) with check (true);
 grant select, insert, update on public.fecart_group_content to anon, authenticated;
+
+
+-- Bucket público para vídeos e capas enviados pelo modo de manutenção.
+insert into storage.buckets (id, name, public) values ('fecart-media', 'fecart-media', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "public can read fecart media" on storage.objects;
+create policy "public can read fecart media" on storage.objects for select using (bucket_id = 'fecart-media');
+drop policy if exists "public can upload fecart media" on storage.objects;
+create policy "public can upload fecart media" on storage.objects for insert with check (bucket_id = 'fecart-media');
+drop policy if exists "public can update fecart media" on storage.objects;
+create policy "public can update fecart media" on storage.objects for update using (bucket_id = 'fecart-media') with check (bucket_id = 'fecart-media');
