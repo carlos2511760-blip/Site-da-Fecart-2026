@@ -13,3 +13,4 @@
 @media(prefers-reduced-motion:reduce){.project-card{opacity:1;transform:none}.project-card.is-visible:hover{transform:none}.related-project:hover{transform:none}}
 
 .social-icon{width:22px;height:22px;object-fit:contain;display:block}.social-icon-instagram{filter:brightness(0) invert(1);}
+.social-icon-tiktok{filter:brightness(0) invert(1);}
