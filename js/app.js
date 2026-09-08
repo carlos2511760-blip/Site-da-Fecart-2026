@@ -15,7 +15,7 @@
   const apiUrl = path => `${supabase.url || ''}/rest/v1/${path}`;
   const apiHeaders = () => ({ apikey: supabase.anonKey || '', Authorization: `Bearer ${supabase.anonKey || ''}`, 'Content-Type': 'application/json' });
   const groupById = id => data.groups.find(group => group.id === id) || { name: 'Grupo não definido' };
-  const imageHTML = (src, alt, className = 'project-image') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy">` : `<div class="${className} placeholder" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
+  const imageHTML = (src, alt, className = 'project-image') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy" decoding="async">` : `<div class="${className} placeholder" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
   function mergeGroup(base, current) {
     const result = structuredClone(base || {});
     Object.assign(result, current || {});

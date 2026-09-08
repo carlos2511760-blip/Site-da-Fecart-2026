@@ -3,7 +3,7 @@
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const escapeHTML = (value = '') => String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]));
-  const image = (src, alt, className = '') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy">` : `<div class="image-placeholder ${className}" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
+  const image = (src, alt, className = '') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy" decoding="async">` : `<div class="image-placeholder ${className}" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
   const placeholderMedia = (label, type = 'photo') => `<div class="media-placeholder ${type}-placeholder" role="img" aria-label="${escapeHTML(label)}"><span>${type === 'video' ? '▶' : 'F'}</span><small>${escapeHTML(label)}</small></div>`;
   const query = new URLSearchParams(location.search).get('grupo');
   let data;
