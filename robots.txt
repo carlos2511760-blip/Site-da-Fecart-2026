@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://carlos2511760-blip.github.io/Site-da-Fecart-2026/sitemap.xml
