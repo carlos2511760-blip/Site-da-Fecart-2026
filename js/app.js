@@ -15,7 +15,7 @@
   const apiUrl = path => `${supabase.url || ''}/rest/v1/${path}`;
   const apiHeaders = () => ({ apikey: supabase.anonKey || '', Authorization: `Bearer ${supabase.anonKey || ''}`, 'Content-Type': 'application/json' });
   const groupById = id => data.groups.find(group => group.id === id) || { name: 'Grupo não definido' };
-  const imageHTML = (src, alt, className = 'project-image') => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy" decoding="async">` : `<div class="${className} placeholder" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
+  const imageHTML = (src, alt, className = 'project-image', priority = false) => src ? `<img class="${className}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="${priority ? 'eager' : 'lazy'}" decoding="async"${priority ? ' fetchpriority=\"high\"' : ''}>` : `<div class="${className} placeholder" role="img" aria-label="Imagem ainda não adicionada">F</div>`;
   function mergeGroup(base, current) {
     const result = structuredClone(base || {});
     Object.assign(result, current || {});
@@ -71,10 +71,10 @@
   function renderProjects(filter = 'all') {
     const projects = data.projects.filter(project => filter === 'all' || project.groupId === filter);
     $('#empty-state').hidden = projects.length > 0;
-    $('#projects-grid').innerHTML = projects.map(project => {
+    $('#projects-grid').innerHTML = projects.map((project, projectIndex) => {
       const group = groupById(project.groupId);
       const likeCount = likes[project.dbId] || likes[project.id] || project.likes || 0;
-      return `<article class="project-card reveal-card" tabindex="0" role="button" data-project="${escapeHTML(project.id)}" aria-label="Abrir projeto ${escapeHTML(project.title)}" style="--reveal-delay:${Math.min(data.projects.indexOf(project), 7) * 70}ms">${imageHTML(project.thumbnail || project.coverImage, project.title)}<div class="project-card-body"><div class="project-meta"><span>${escapeHTML(project.year || 'sem data')}</span><span>${escapeHTML(group.name)}</span></div><h3>${escapeHTML(project.title)}</h3><p>${escapeHTML(project.shortDescription)}</p><div class="project-footer"><div class="tag-list">${(project.tags || []).slice(0, 2).map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}</div><span class="project-arrow" aria-hidden="true">↗</span></div><div class="card-like-count">♡ ${likeCount} curtida${likeCount === 1 ? '' : 's'}</div></div></article>`;
+      return `<article class="project-card reveal-card" tabindex="0" role="button" data-project="${escapeHTML(project.id)}" aria-label="Abrir projeto ${escapeHTML(project.title)}" style="--reveal-delay:${Math.min(projectIndex, 7) * 35}ms">${imageHTML(project.thumbnail || project.coverImage, project.title, 'project-image', projectIndex === 0)}<div class="project-card-body"><div class="project-meta"><span>${escapeHTML(project.year || 'sem data')}</span><span>${escapeHTML(group.name)}</span></div><h3>${escapeHTML(project.title)}</h3><p>${escapeHTML(project.shortDescription)}</p><div class="project-footer"><div class="tag-list">${(project.tags || []).slice(0, 2).map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}</div><span class="project-arrow" aria-hidden="true">↗</span></div><div class="card-like-count">♡ ${likeCount} curtida${likeCount === 1 ? '' : 's'}</div></div></article>`;
     }).join('');
     $$('.project-card').forEach(card => { card.addEventListener('click', () => openProject(card.dataset.project)); card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openProject(card.dataset.project); } }); });
     const revealObserver = 'IntersectionObserver' in window ? new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.transitionDelay = entry.target.style.getPropertyValue('--reveal-delay'); entry.target.classList.add('is-visible'); revealObserver.unobserve(entry.target); } }), { threshold: .12 }) : null;

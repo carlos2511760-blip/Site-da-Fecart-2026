@@ -12,3 +12,11 @@
 @media(max-width:560px){.projects-grid{gap:24px}.hero-actions{gap:16px;flex-wrap:wrap}.project-card-body{padding:20px}.group-card{padding:22px}}
 @media(prefers-reduced-motion:reduce){.project-card{opacity:1;transform:none}.project-card.is-visible:hover{transform:none}.related-project:hover{transform:none}}
 
+/* Entrada fluida sem bloquear o conteúdo */
+.project-card{will-change:opacity,transform;transition-duration:.38s}
+.group-main .section-block{opacity:1;transform:none}
+.group-main.content-ready .section-block{animation:section-enter .42s cubic-bezier(.22,.75,.25,1) forwards}
+.group-main.content-ready .section-block:nth-child(2){animation-delay:.05s}
+.group-main.content-ready .section-block:nth-child(3){animation-delay:.1s}
+@keyframes section-enter{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.group-main .section-block{opacity:1;transform:none}.group-main.content-ready .section-block{animation:none}}
