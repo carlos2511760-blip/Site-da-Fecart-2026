@@ -17,3 +17,5 @@ html{background:var(--paper)}body{background-color:var(--paper);background-image
 .quiz-cta{background:var(--paper-2)!important;border-color:var(--line)!important}.quiz-cta h2 em{color:var(--brand-green)}
 ::selection{background:var(--brand-green);color:var(--brand-blue)}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+.brand-logo{width:34px;height:34px;object-fit:contain;display:block;border-radius:50%}.brand-light .brand-logo{background:#fff}.brand{gap:10px}.brand-logo + span{letter-spacing:-.06em}
