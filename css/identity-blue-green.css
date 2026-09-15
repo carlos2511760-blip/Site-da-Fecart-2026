@@ -1,0 +1,19 @@
+/* Identidade visual temporária — Fecart Informática */
+:root{
+  --paper:#07090d;--paper-2:#10151d;--ink:#f1f4f7;--muted:#aab4bd;--line:#27313b;
+  --tomato:#53c748;--tomato-dark:#3b9f38;--leaf:#536f48;--sun:#53c748;--night:#050608;--white:#111923;
+  --brand-blue:#161844;--brand-blue-light:#262a70;--brand-green:#53c748;
+  --shadow:0 20px 60px rgba(0,0,0,.38)
+}
+html{background:var(--paper)}body{background-color:var(--paper);background-image:linear-gradient(rgba(83,199,72,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(83,199,72,.06) 1px,transparent 1px);background-size:48px 48px;color:var(--ink)}
+.site-header{background:rgba(7,9,13,.9);border-bottom-color:var(--line)}.brand{color:var(--ink)}.brand-mark{background:var(--brand-green);color:var(--brand-blue);border-radius:3px}.site-nav a,.back-link{color:var(--muted)}.site-nav a:hover,.back-link:hover{color:var(--brand-green)}
+.hero-art{background:var(--brand-blue);border:1px solid var(--brand-blue-light)}.sun-disc{background:var(--brand-green)}.gear{background:var(--brand-green);box-shadow:0 0 0 22px rgba(83,199,72,.14)}.gear:before{border-color:var(--brand-green)}.gear i{background:var(--brand-blue);border-color:var(--paper-2)}
+.hero em,h2 em,.section-kicker,.modal-label,.project-meta,.related-project span,.related-project small{color:var(--brand-green)}.hero-lead,.section-note,.group-description,.project-card p,.about-text p,.project-detail>div>p,.empty-detail{color:var(--muted)}
+.button-primary{background:var(--brand-green);color:var(--brand-blue)}.button-primary:hover{background:#75d968}.button-dark{background:var(--brand-blue);color:var(--ink)}.button-ghost,.filter-button{border-color:var(--line);color:var(--muted)}.filter-button:hover,.filter-button.active{background:var(--brand-green);border-color:var(--brand-green);color:var(--brand-blue)}
+.project-card,.group-card,.member-card,.project-modal,.quiz-card,.quiz-result,.editor-panel{background:rgba(16,21,29,.96);border-color:var(--line);color:var(--ink)}.project-card:hover,.group-card:hover{box-shadow:var(--shadow)}.project-image,.modal-cover,.member-photo,.gallery-image{background:var(--paper-2)}.group-card:after{background:var(--brand-green)}.group-count,.group-card-link,.group-card-link span{color:var(--brand-green)}
+.group-logo,.group-hero,.section-block,.project-related,.timeline,.timeline-item{border-color:var(--line)}.image-placeholder,.member-placeholder{background:var(--paper-2);color:var(--muted)}.related-project:hover{background:var(--paper-2)}
+.site-footer{background:var(--night);border-top:1px solid var(--line)}.social-pin{border-color:var(--line);color:var(--muted)}.social-pin:hover{border-color:var(--brand-green);color:var(--brand-green)}.footer-bottom{border-top-color:var(--line)}
+.modal-backdrop{background:rgba(0,0,0,.78)}.editor-field textarea,.editor-field input{background:var(--paper);border-color:var(--line);color:var(--ink)}.editor-actions{background:var(--white)}.editor-status{color:var(--brand-green)}
+.quiz-cta{background:var(--paper-2)!important;border-color:var(--line)!important}.quiz-cta h2 em{color:var(--brand-green)}
+::selection{background:var(--brand-green);color:var(--brand-blue)}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
