@@ -10,6 +10,44 @@
     },
     "about": {
       "description": "A Fecart reúne estudantes que aprendem criando. Cada grupo transforma conceitos de eletrônica, programação e mecânica em projetos concretos — e transforma cada tentativa em conhecimento compartilhado."
+    },
+    "copy": {
+      "navHome": "Início",
+      "navProjects": "Projetos",
+      "navAbout": "Sobre",
+      "heroAction": "Explorar projetos",
+      "groupsKicker": "grupos em movimento",
+      "groupsTitle": "Quatro grupos,\numa mesma curiosidade.",
+      "groupsLink": "Conhecer grupo",
+      "aboutKicker": "sobre a fecart",
+      "aboutTitle": "Tecnologia com\njeito de gente.",
+      "projectsKicker": "projetos em processo",
+      "projectsTitle": "Feitos para funcionar.\nFeitos para ensinar.",
+      "projectsNote": "Clique em um projeto para conhecer a ideia e entrar em Por trás de tudo: o making of de cada descoberta.",
+      "filterAll": "Todos",
+      "emptyProjects": "Nenhum projeto encontrado com esse filtro.",
+      "quizKicker": "curiosidade em jogo",
+      "quizTitle": "O que você\naprendeu?",
+      "quizDescription": "Responda ao quiz da Fecart, descubra seu resultado e entre para o ranking da feira.",
+      "quizButton": "Ir para o quiz",
+      "footerInstagram": "Instagram",
+      "footerTiktok": "TikTok",
+      "footerCopyright": "© 2026 Fecart",
+      "modalMakingOf": "Por trás de tudo · making of",
+      "modalEmptyMakingOf": "O making of deste projeto será registrado aqui.",
+      "modalStatus": "Status",
+      "modalTeam": "Equipe",
+      "modalGroupLink": "Conhecer o grupo",
+      "modalLike": "Curtir este projeto",
+      "modalLiked": "Você curtiu",
+      "groupLabel": "grupo",
+      "groupLink": "Conhecer grupo",
+      "projectSingular": "projeto",
+      "projectPlural": "projetos",
+      "openProject": "Abrir projeto",
+      "noDate": "sem data",
+      "likeSingular": "curtida",
+      "likePlural": "s"
     }
   },
   "groups": [
@@ -87,7 +125,28 @@
           "caption": "Capa demonstrativa de vídeo",
           "demo": true
         }
-      ]
+      ],
+      "copy": {
+        "pageKicker": "grupo Fecart",
+        "membersKicker": "quem constrói",
+        "membersTitle": "Pessoas por\ntrás da ideia.",
+        "projectKicker": "o projeto",
+        "galleryKicker": "por trás de tudo",
+        "galleryTitle": "O processo\nem imagens.",
+        "galleryDescription": "Fotos e vídeos para registrar testes, protótipos, erros, descobertas e todas as etapas que fazem o projeto acontecer.",
+        "backLink": "← voltar para projetos",
+        "previewHint": "passe ou toque para ver",
+        "missingDescription": "Este grupo ainda está preparando sua apresentação.",
+        "missingProject": "Projeto em construção",
+        "missingProjectDescription": "A descrição detalhada do projeto será adicionada aqui.",
+        "missingGallery": "Os projetos deste grupo aparecerão aqui.",
+        "editorHint": "Use Ctrl + Shift + \\ para abrir. As alterações ficam salvas para todos.",
+        "relatedLink": "ver projeto completo",
+        "emptyRelated": "Os projetos deste grupo aparecerão aqui.",
+        "projectImagePlaceholder": "Foto principal do projeto",
+        "galleryVideoPlaceholder": "Vídeo do making of",
+        "photoPlaceholder": "Foto do processo"
+      }
     },
     {
       "id": "faotasticos",
@@ -163,7 +222,28 @@
           "caption": "Capa demonstrativa de vídeo",
           "demo": true
         }
-      ]
+      ],
+      "copy": {
+        "pageKicker": "grupo Fecart",
+        "membersKicker": "quem constrói",
+        "membersTitle": "Pessoas por\ntrás da ideia.",
+        "projectKicker": "o projeto",
+        "galleryKicker": "por trás de tudo",
+        "galleryTitle": "O processo\nem imagens.",
+        "galleryDescription": "Fotos e vídeos para registrar testes, protótipos, erros, descobertas e todas as etapas que fazem o projeto acontecer.",
+        "backLink": "← voltar para projetos",
+        "previewHint": "passe ou toque para ver",
+        "missingDescription": "Este grupo ainda está preparando sua apresentação.",
+        "missingProject": "Projeto em construção",
+        "missingProjectDescription": "A descrição detalhada do projeto será adicionada aqui.",
+        "missingGallery": "Os projetos deste grupo aparecerão aqui.",
+        "editorHint": "Use Ctrl + Shift + \\ para abrir. As alterações ficam salvas para todos.",
+        "relatedLink": "ver projeto completo",
+        "emptyRelated": "Os projetos deste grupo aparecerão aqui.",
+        "projectImagePlaceholder": "Foto principal do projeto",
+        "galleryVideoPlaceholder": "Vídeo do making of",
+        "photoPlaceholder": "Foto do processo"
+      }
     },
     {
       "id": "sabor-robotica",
@@ -231,7 +311,28 @@
           "caption": "Capa demonstrativa de vídeo",
           "demo": true
         }
-      ]
+      ],
+      "copy": {
+        "pageKicker": "grupo Fecart",
+        "membersKicker": "quem constrói",
+        "membersTitle": "Pessoas por\ntrás da ideia.",
+        "projectKicker": "o projeto",
+        "galleryKicker": "por trás de tudo",
+        "galleryTitle": "O processo\nem imagens.",
+        "galleryDescription": "Fotos e vídeos para registrar testes, protótipos, erros, descobertas e todas as etapas que fazem o projeto acontecer.",
+        "backLink": "← voltar para projetos",
+        "previewHint": "passe ou toque para ver",
+        "missingDescription": "Este grupo ainda está preparando sua apresentação.",
+        "missingProject": "Projeto em construção",
+        "missingProjectDescription": "A descrição detalhada do projeto será adicionada aqui.",
+        "missingGallery": "Os projetos deste grupo aparecerão aqui.",
+        "editorHint": "Use Ctrl + Shift + \\ para abrir. As alterações ficam salvas para todos.",
+        "relatedLink": "ver projeto completo",
+        "emptyRelated": "Os projetos deste grupo aparecerão aqui.",
+        "projectImagePlaceholder": "Foto principal do projeto",
+        "galleryVideoPlaceholder": "Vídeo do making of",
+        "photoPlaceholder": "Foto do processo"
+      }
     },
     {
       "id": "acerto-404",
@@ -307,7 +408,28 @@
           "caption": "Capa demonstrativa de vídeo",
           "demo": true
         }
-      ]
+      ],
+      "copy": {
+        "pageKicker": "grupo Fecart",
+        "membersKicker": "quem constrói",
+        "membersTitle": "Pessoas por\ntrás da ideia.",
+        "projectKicker": "o projeto",
+        "galleryKicker": "por trás de tudo",
+        "galleryTitle": "O processo\nem imagens.",
+        "galleryDescription": "Fotos e vídeos para registrar testes, protótipos, erros, descobertas e todas as etapas que fazem o projeto acontecer.",
+        "backLink": "← voltar para projetos",
+        "previewHint": "passe ou toque para ver",
+        "missingDescription": "Este grupo ainda está preparando sua apresentação.",
+        "missingProject": "Projeto em construção",
+        "missingProjectDescription": "A descrição detalhada do projeto será adicionada aqui.",
+        "missingGallery": "Os projetos deste grupo aparecerão aqui.",
+        "editorHint": "Use Ctrl + Shift + \\ para abrir. As alterações ficam salvas para todos.",
+        "relatedLink": "ver projeto completo",
+        "emptyRelated": "Os projetos deste grupo aparecerão aqui.",
+        "projectImagePlaceholder": "Foto principal do projeto",
+        "galleryVideoPlaceholder": "Vídeo do making of",
+        "photoPlaceholder": "Foto do processo"
+      }
     }
   ],
   "projects": []
