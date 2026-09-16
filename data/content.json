@@ -110,19 +110,19 @@
         {
           "type": "photo",
           "src": "assets/demo-robot-project.jpg",
-          "caption": "Imagem demonstrativa do projeto",
+          "caption": "Registro do projeto",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-making-of.jpg",
-          "caption": "Imagem demonstrativa do processo",
+          "caption": "Registro do processo",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-video-poster.jpg",
-          "caption": "Capa demonstrativa de vídeo",
+          "caption": "Capa do vídeo",
           "demo": true
         }
       ],
@@ -207,19 +207,19 @@
         {
           "type": "photo",
           "src": "assets/demo-robot-project.jpg",
-          "caption": "Imagem demonstrativa do projeto",
+          "caption": "Registro do projeto",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-making-of.jpg",
-          "caption": "Imagem demonstrativa do processo",
+          "caption": "Registro do processo",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-video-poster.jpg",
-          "caption": "Capa demonstrativa de vídeo",
+          "caption": "Capa do vídeo",
           "demo": true
         }
       ],
@@ -296,19 +296,19 @@
         {
           "type": "photo",
           "src": "assets/demo-robot-project.jpg",
-          "caption": "Imagem demonstrativa do projeto",
+          "caption": "Registro do projeto",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-making-of.jpg",
-          "caption": "Imagem demonstrativa do processo",
+          "caption": "Registro do processo",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-video-poster.jpg",
-          "caption": "Capa demonstrativa de vídeo",
+          "caption": "Capa do vídeo",
           "demo": true
         }
       ],
@@ -393,19 +393,19 @@
         {
           "type": "photo",
           "src": "assets/demo-robot-project.jpg",
-          "caption": "Imagem demonstrativa do projeto",
+          "caption": "Registro do projeto",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-making-of.jpg",
-          "caption": "Imagem demonstrativa do processo",
+          "caption": "Registro do processo",
           "demo": true
         },
         {
           "type": "photo",
           "src": "assets/demo-video-poster.jpg",
-          "caption": "Capa demonstrativa de vídeo",
+          "caption": "Capa do vídeo",
           "demo": true
         }
       ],
