@@ -8,7 +8,8 @@
   .group-description,.project-detail p,.block-heading>p{overflow-wrap:anywhere}
   .member-card{min-width:0}
   .member-card h3,.member-card p{overflow-wrap:anywhere}
-  .project-main-image,.gallery-image,.gallery-video{display:block;width:100%;max-width:100%;height:auto;object-fit:cover}
+  .project-main-image{display:block;width:100%;max-width:100%;object-fit:cover}
+  .gallery-image,.gallery-video{display:block;width:100%;max-width:100%;height:auto;object-fit:cover}
   .gallery-video{max-height:70vh}
   .process-gallery figure{min-width:0}
   .social-pin{min-height:40px}
