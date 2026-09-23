@@ -31,3 +31,5 @@
 .members-section .block-heading h2{text-align:center;max-width:900px}
 .members-section .block-heading{justify-items:start;text-align:left}
 .members-section .block-heading h2{text-align:left}
+.gallery-section .block-heading{grid-template-columns:1fr;justify-items:start;text-align:left}
+.gallery-section .block-heading h2{text-align:left;max-width:900px}
