@@ -36,4 +36,4 @@
 .group-project .project-main-image,.group-project .media-placeholder{height:360px}
 @media(max-width:850px){.group-project .project-main-image,.group-project .media-placeholder{height:280px}}
 .group-project .project-main-image,.group-project .media-placeholder{width:min(100%,920px)}
-.group-project .project-main-image{width:128px;height:128px}
+.group-project .project-main-image{width:1028px;height:1028px;max-width:100%}
