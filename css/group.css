@@ -26,3 +26,6 @@
 .group-project .project-main-image,.group-project .media-placeholder{width:min(100%,640px);margin-inline:auto}
 .group-project .project-detail>div>p{max-width:920px;margin-left:auto;margin-right:auto}
 .group-project .project-related{max-width:920px;width:100%;margin-inline:auto}
+
+.members-section .block-heading{grid-template-columns:1fr;justify-items:center;text-align:center}
+.members-section .block-heading h2{text-align:center;max-width:900px}
