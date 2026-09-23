@@ -16,3 +16,13 @@
   .group-project .project-detail>div>p{font-size:16px;line-height:1.6;margin-top:18px}
   .group-project .project-related{margin-top:0}
 }
+
+/* Nome e foto do projeto centralizados em todas as páginas de grupo */
+.group-project .block-heading{grid-template-columns:1fr;justify-items:center;text-align:center}
+.group-project .block-heading h2{max-width:900px;text-align:center}
+.group-project .project-detail{grid-template-columns:1fr;min-height:0}
+.group-project .project-detail>div:first-child{min-height:0;max-width:920px;width:100%;margin-inline:auto}
+.group-project .project-main-media{display:flex;justify-content:center}
+.group-project .project-main-image,.group-project .media-placeholder{width:min(100%,920px);margin-inline:auto}
+.group-project .project-detail>div>p{max-width:920px;margin-left:auto;margin-right:auto}
+.group-project .project-related{max-width:920px;width:100%;margin-inline:auto}
