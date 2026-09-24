@@ -38,22 +38,22 @@
     data.contentVersion = CONTENT_VERSION;
     if (new URLSearchParams(location.search).get('tema') === 'verde') data.site.theme = { paper: '#eef4ec', 'paper-2': '#dcebdc', ink: '#18352a', muted: '#567064', line: '#b8cdbd', tomato: '#2d8a57', 'tomato-dark': '#1f6d43', leaf: '#286b4e', sun: '#a9c95b', night: '#153127', white: '#f8fcf7' };
     if (supabase.url && supabase.anonKey) {
+      void (async () => {
+      const remoteFetch = path => fetch(apiUrl(path), { headers: apiHeaders(), signal: AbortSignal.timeout(4500) });
       try {
-        const remote = await fetch(apiUrl('fecart_projects?select=*&order=sort_order.asc,created_at.asc'), { headers: apiHeaders() });
-        if (remote.ok) {
-          const rows = await remote.json();
-          if (rows.length) data.projects = rows.map(fromDatabase);
-        }
-        const siteResponse = await fetch(apiUrl('fecart_site_content?site_id=eq.home&select=content&limit=1'), { headers: apiHeaders() });
+        const [remote, siteResponse, groupsResponse, likesResponse] = await Promise.all([
+          remoteFetch('fecart_projects?select=*&order=sort_order.asc,created_at.asc'),
+          remoteFetch('fecart_site_content?site_id=eq.home&select=content&limit=1'),
+          remoteFetch('fecart_group_content?select=group_id,content'),
+          remoteFetch('fecart_project_likes?select=project_id,likes_count')
+        ]);
+        if (remote.ok) { const rows = await remote.json(); if (rows.length) data.projects = rows.map(fromDatabase); }
         if (siteResponse.ok) { const siteRows = await siteResponse.json(); if (siteRows[0]?.content) data.site = { ...data.site, ...siteRows[0].content, copy: { ...(data.site.copy || {}), ...(siteRows[0].content.copy || {}) } }; }
-        const groupsResponse = await fetch(apiUrl('fecart_group_content?select=group_id,content'), { headers: apiHeaders() });
-        if (groupsResponse.ok) {
-          const groupRows = await groupsResponse.json();
-          groupRows.forEach(row => { const index = data.groups.findIndex(group => group.id === row.group_id); if (index >= 0 && row.content) data.groups[index] = mergeGroup(data.groups[index], row.content); });
-        }
-        const likesResponse = await fetch(apiUrl('fecart_project_likes?select=project_id,likes_count'), { headers: apiHeaders() });
+        if (groupsResponse.ok) { const groupRows = await groupsResponse.json(); groupRows.forEach(row => { const index = data.groups.findIndex(group => group.id === row.group_id); if (index >= 0 && row.content) data.groups[index] = mergeGroup(data.groups[index], row.content); }); }
         if (likesResponse.ok) (await likesResponse.json()).forEach(row => { likes[row.project_id] = row.likes_count; });
-      } catch (error) { console.warn('Supabase indisponível; usando conteúdo local.', error); }
+      } catch (error) { console.warn('Supabase indisponível ou lento; usando conteúdo local.', error); }
+      if (document.body.classList.contains('app-ready')) renderAll();
+      })();
     }
   }
 
