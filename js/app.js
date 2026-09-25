@@ -26,6 +26,7 @@
     return result;
   }
   const readLiked = () => { try { return JSON.parse(localStorage.getItem(LIKED_KEY) || '[]'); } catch { return []; } };
+  function applyLikeRows(rows) { (rows || []).forEach(row => { likes[row.project_id] = Number(row.likes_count) || 0; }); data?.projects?.forEach(project => { if (project.dbId && likes[project.dbId] !== undefined) project.likes = likes[project.dbId]; }); }
 
   async function loadData() {
     const response = await fetch(DATA_URL, { signal: AbortSignal.timeout(2500) });
@@ -54,7 +55,9 @@
         if (remote?.ok) { const rows = await remote.json(); if (rows.length) data.projects = rows.map(fromDatabase); }
         if (siteResponse?.ok) { const siteRows = await siteResponse.json(); if (siteRows[0]?.content) data.site = { ...data.site, ...siteRows[0].content, copy: { ...(data.site.copy || {}), ...(siteRows[0].content.copy || {}) } }; }
         if (groupsResponse?.ok) { const groupRows = await groupsResponse.json(); groupRows.forEach(row => { const index = data.groups.findIndex(group => group.id === row.group_id); if (index >= 0 && row.content) data.groups[index] = mergeGroup(data.groups[index], row.content); }); }
-        if (likesResponse?.ok) (await likesResponse.json()).forEach(row => { likes[row.project_id] = row.likes_count; });
+        if (likesResponse?.ok) applyLikeRows(await likesResponse.json());
+        if (!data.projects.length && !remote?.ok) { const recovery = await remoteFetch('fecart_projects?select=*&order=sort_order.asc,created_at.asc'); if (recovery.ok) data.projects = (await recovery.json()).map(fromDatabase); }
+        if (!Object.keys(likes).length) { const likesRecovery = await remoteFetch('fecart_project_likes?select=project_id,likes_count'); if (likesRecovery.ok) applyLikeRows(await likesRecovery.json()); }
       } catch (error) { console.warn('Supabase indisponível ou lento; usando conteúdo local.', error); }
       })();
     }
@@ -78,7 +81,7 @@
     $('#empty-state').hidden = projects.length > 0;
     $('#projects-grid').innerHTML = projects.map((project, projectIndex) => {
       const group = groupById(project.groupId); const copy = data.site.copy || {};
-      const likeCount = likes[project.dbId] || likes[project.id] || project.likes || 0;
+      const likeCount = likes[project.dbId] ?? likes[project.id] ?? project.likes ?? 0;
       return `<button type="button" class="project-card reveal-card" data-project="${escapeHTML(project.id)}" aria-label="${escapeHTML(copy.openProject || 'Abrir projeto')} ${escapeHTML(project.title)}" style="--reveal-delay:${Math.min(projectIndex, 7) * 35}ms">${imageHTML(project.thumbnail || project.coverImage, project.title, 'project-image', projectIndex === 0)}<div class="project-card-body"><div class="project-meta"><span>${escapeHTML(project.year || copy.noDate || 'sem data')}</span><span>${escapeHTML(group.name)}</span></div><h3>${escapeHTML(project.title)}</h3><p>${escapeHTML(project.shortDescription)}</p><div class="project-footer"><div class="tag-list">${(project.tags || []).slice(0, 2).map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}</div><span class="project-arrow" aria-hidden="true">↗</span></div><div class="card-like-count">♡ ${likeCount} ${escapeHTML(copy.likeSingular || 'curtida')}${likeCount === 1 ? '' : escapeHTML(copy.likePlural || 's')}</div></div></button>`;
     }).join('');
     $$('.project-card').forEach(card => { card.addEventListener('click', () => openProject(card.dataset.project)); card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openProject(card.dataset.project); } }); });
@@ -99,7 +102,7 @@
   function renderEditableCopy() { const values = { 'hero.title': data.site.hero?.title, 'hero.subtitle': data.site.hero?.subtitle, 'about.description': data.site.about?.description, ...(Object.fromEntries(Object.entries(data.site.copy || {}).map(([key, value]) => [`copy.${key}`, value]))) }; Object.entries(values).forEach(([key, value]) => { const element = $(`[data-edit=\"${key}\"]`); if (element) element.innerHTML = escapeHTML(value || '').replace(/\n/g, '<br>'); }); const theme = data.site.theme || {}; Object.entries(theme).forEach(([key, value]) => document.documentElement.style.setProperty(`--${key}`, value)); }
   function openProject(id) {
     const project = data.projects.find(item => item.id === id); if (!project) return;
-    const group = groupById(project.groupId); const copy = data.site.copy || {}; const liked = readLiked().includes(project.id); const likeCount = likes[project.dbId] || likes[project.id] || 0;
+    const group = groupById(project.groupId); const copy = data.site.copy || {}; const liked = readLiked().includes(project.id); const likeCount = likes[project.dbId] ?? likes[project.id] ?? project.likes ?? 0;
     $('#modal-content').innerHTML = `<div class="modal-content-grid"><div>${imageHTML(project.coverImage || project.thumbnail, project.title, 'modal-cover')}</div><div><span class="modal-label">${escapeHTML(group.name)} · ${escapeHTML(project.year || 'sem data')}</span><h2 class="modal-title" id="modal-title">${escapeHTML(project.title)}</h2><p class="modal-description">${escapeHTML(project.fullDescription || project.shortDescription)}</p><div class="tag-list">${(project.tags || []).map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join('')}</div><div class="modal-actions"><a class="group-detail-link modal-action-button" href="grupo.html?grupo=${encodeURIComponent(project.groupId)}">${escapeHTML(copy.modalGroupLink || 'Conhecer o grupo')} <span>↗</span></a><button class="like-button ${liked ? 'is-liked' : ''}" id="like-button" type="button" ${liked ? 'disabled' : ''}>♡ <span>${liked ? escapeHTML(copy.modalLiked || 'Você curtiu') : escapeHTML(copy.modalLike || 'Curtir este projeto')}</span> · <b>${likeCount}</b></button></div></div></div>`
     $('#project-modal').hidden = false; document.body.classList.add('modal-open'); $('#modal-close').focus(); $('#like-button').addEventListener('click', () => likeProject(project));
   }
