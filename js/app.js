@@ -28,7 +28,7 @@
   const readLiked = () => { try { return JSON.parse(localStorage.getItem(LIKED_KEY) || '[]'); } catch { return []; } };
 
   async function loadData() {
-    const response = await fetch(DATA_URL);
+    const response = await fetch(DATA_URL, { signal: AbortSignal.timeout(2500) });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     initialData = await response.json();
     const draft = localStorage.getItem(STORAGE_KEY);
@@ -38,21 +38,24 @@
     data.contentVersion = CONTENT_VERSION;
     if (new URLSearchParams(location.search).get('tema') === 'verde') data.site.theme = { paper: '#eef4ec', 'paper-2': '#dcebdc', ink: '#18352a', muted: '#567064', line: '#b8cdbd', tomato: '#2d8a57', 'tomato-dark': '#1f6d43', leaf: '#286b4e', sun: '#a9c95b', night: '#153127', white: '#f8fcf7' };
     if (supabase.url && supabase.anonKey) {
-      void (async () => {
-      const remoteFetch = path => fetch(apiUrl(path), { headers: apiHeaders(), signal: AbortSignal.timeout(4500) });
+      await (async () => {
+      const remoteFetch = path => fetch(apiUrl(path), { headers: apiHeaders(), signal: AbortSignal.timeout(2200) });
       try {
-        const [remote, siteResponse, groupsResponse, likesResponse] = await Promise.all([
+        const [remoteResult, siteResult, groupsResult, likesResult] = await Promise.allSettled([
           remoteFetch('fecart_projects?select=*&order=sort_order.asc,created_at.asc'),
           remoteFetch('fecart_site_content?site_id=eq.home&select=content&limit=1'),
           remoteFetch('fecart_group_content?select=group_id,content'),
           remoteFetch('fecart_project_likes?select=project_id,likes_count')
         ]);
-        if (remote.ok) { const rows = await remote.json(); if (rows.length) data.projects = rows.map(fromDatabase); }
-        if (siteResponse.ok) { const siteRows = await siteResponse.json(); if (siteRows[0]?.content) data.site = { ...data.site, ...siteRows[0].content, copy: { ...(data.site.copy || {}), ...(siteRows[0].content.copy || {}) } }; }
-        if (groupsResponse.ok) { const groupRows = await groupsResponse.json(); groupRows.forEach(row => { const index = data.groups.findIndex(group => group.id === row.group_id); if (index >= 0 && row.content) data.groups[index] = mergeGroup(data.groups[index], row.content); }); }
-        if (likesResponse.ok) (await likesResponse.json()).forEach(row => { likes[row.project_id] = row.likes_count; });
+        const remote = remoteResult.status === 'fulfilled' ? remoteResult.value : null;
+        const siteResponse = siteResult.status === 'fulfilled' ? siteResult.value : null;
+        const groupsResponse = groupsResult.status === 'fulfilled' ? groupsResult.value : null;
+        const likesResponse = likesResult.status === 'fulfilled' ? likesResult.value : null;
+        if (remote?.ok) { const rows = await remote.json(); if (rows.length) data.projects = rows.map(fromDatabase); }
+        if (siteResponse?.ok) { const siteRows = await siteResponse.json(); if (siteRows[0]?.content) data.site = { ...data.site, ...siteRows[0].content, copy: { ...(data.site.copy || {}), ...(siteRows[0].content.copy || {}) } }; }
+        if (groupsResponse?.ok) { const groupRows = await groupsResponse.json(); groupRows.forEach(row => { const index = data.groups.findIndex(group => group.id === row.group_id); if (index >= 0 && row.content) data.groups[index] = mergeGroup(data.groups[index], row.content); }); }
+        if (likesResponse?.ok) (await likesResponse.json()).forEach(row => { likes[row.project_id] = row.likes_count; });
       } catch (error) { console.warn('Supabase indisponível ou lento; usando conteúdo local.', error); }
-      if (document.body.classList.contains('app-ready')) renderAll();
       })();
     }
   }
@@ -159,5 +162,5 @@
   function openEditor() { renderEditor(); $('#editor-panel').hidden = false; document.body.classList.add('editor-open'); $('#editor-close').focus(); }
   function closeEditor() { $('#editor-panel').hidden = true; document.body.classList.remove('editor-open'); }
   function init() { $('#modal-close').addEventListener('click', closeProject); $('#project-modal').addEventListener('click', event => { if (event.target.id === 'project-modal') closeProject(); }); $('#editor-close').addEventListener('click', closeEditor); $('#editor-export').addEventListener('click', exportJSON); $('#editor-save-db').addEventListener('click', async () => { $('#editor-status').textContent = 'Salvando página inicial e projetos no banco público...'; try { await Promise.all([saveProjectsToDatabase(), saveSiteToDatabase()]); $('#editor-status').textContent = 'Página inicial e projetos salvos para todos.'; } catch (error) { $('#editor-status').textContent = 'Não foi possível salvar a página inicial.'; console.warn(error); } }); $('#editor-reset').addEventListener('click', resetEditor); $('#menu-toggle').addEventListener('click', () => { const open = $('#site-nav').classList.toggle('is-open'); $('#menu-toggle').setAttribute('aria-expanded', String(open)); }); $$('#site-nav a').forEach(link => link.addEventListener('click', () => $('#site-nav').classList.remove('is-open'))); document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeProject(); closeEditor(); } const maintenanceKey = event.key === '\\' || event.key === '|' || event.code === 'Backslash' || event.code === 'IntlBackslash'; if (event.ctrlKey && event.shiftKey && maintenanceKey) { event.preventDefault(); $('#editor-panel').hidden ? openEditor() : closeEditor(); } }); }
-  loadData().then(() => { renderAll(); init(); document.body.classList.remove('is-hydrating'); document.body.classList.add('app-ready'); }).catch(error => { console.error(error); document.body.classList.remove('is-hydrating'); document.body.classList.add('app-ready'); $('#empty-state').hidden = false; });
+  loadData().then(() => { renderAll(); init(); document.body.classList.remove('is-hydrating'); document.body.classList.add('app-ready'); const loader = $('#site-loader'); loader?.classList.add('is-done'); setTimeout(() => loader?.remove(), 400); }).catch(error => { console.error(error); renderAll(); init(); document.body.classList.remove('is-hydrating'); document.body.classList.add('app-ready'); $('#empty-state').hidden = false; const loader = $('#site-loader'); if (loader) { loader.classList.add('is-done'); setTimeout(() => loader.remove(), 400); } });
 })();
