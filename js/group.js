@@ -108,24 +108,57 @@
     $$('[data-group-position]').forEach(field => field.addEventListener('change', () => updateGroupField(field.dataset.groupPosition, field.value)));
     $$('[data-group-upload]').forEach(field => field.addEventListener('change', () => uploadGroupFile(field)));
   }
+  function uploadPositionKeys(key) {
+    if (key === 'logo') return ['logoPositionX', 'logoPositionY'];
+    const parts = key.split(':');
+    if (parts[0] === 'gallery') return [`gallery:${parts[1]}:positionX`, `gallery:${parts[1]}:positionY`];
+    if (parts[0] === 'member') return [`member:${parts[1]}:${parts[2]}PositionX`, `member:${parts[1]}:${parts[2]}PositionY`];
+    if (parts[0] === 'project') return [`project:${parts[1]}PositionX`, `project:${parts[1]}PositionY`];
+    return [`${key}PositionX`, `${key}PositionY`];
+  }
+  function previewUpload(file, label) {
+    if (!file.type.startsWith('image/')) return Promise.resolve({ file, x: 50, y: 50 });
+    return new Promise(resolve => {
+      const url = URL.createObjectURL(file);
+      const modal = document.createElement('div');
+      modal.className = 'upload-position-modal';
+      modal.innerHTML = `<div class="upload-position-dialog" role="dialog" aria-modal="true" aria-labelledby="upload-position-title"><div class="upload-position-header"><div><p class="section-kicker">pré-visualização</p><h2 id="upload-position-title">Ajuste ${escapeHTML(label.toLowerCase())}</h2></div><button type="button" class="modal-close" aria-label="Cancelar ajuste">×</button></div><div class="upload-position-preview"><img src="${url}" alt="Prévia de ${escapeHTML(label)}"></div><p class="upload-position-help">Mova a imagem até ela ficar bem enquadrada no espaço indicado.</p><div class="position-control"><span>Horizontal <output>50%</output></span><input type="range" min="0" max="100" value="50" data-upload-axis="x" aria-label="Posição horizontal"></div><div class="position-control"><span>Vertical <output>50%</output></span><input type="range" min="0" max="100" value="50" data-upload-axis="y" aria-label="Posição vertical"></div><div class="upload-position-actions"><button type="button" class="button button-ghost" data-upload-cancel>Cancelar</button><button type="button" class="button button-primary" data-upload-confirm>Usar esta imagem</button></div></div>`;
+      document.body.appendChild(modal);
+      const preview = modal.querySelector('img'); const values = { x: 50, y: 50 };
+      const finish = result => { URL.revokeObjectURL(url); modal.remove(); resolve(result); };
+      const update = input => { const axis = input.dataset.uploadAxis; values[axis] = Number(input.value); input.parentElement.querySelector('output').textContent = `${input.value}%`; preview.style.objectPosition = `${values.x}% ${values.y}%`; };
+      modal.querySelectorAll('[data-upload-axis]').forEach(input => input.addEventListener('input', () => update(input)));
+      modal.querySelector('[data-upload-confirm]').addEventListener('click', () => finish({ file, x: values.x, y: values.y }));
+      modal.querySelectorAll('[data-upload-cancel], .modal-close').forEach(button => button.addEventListener('click', () => finish(null)));
+      modal.addEventListener('click', event => { if (event.target === modal) finish(null); });
+      const onKey = event => { if (event.key === 'Escape') { document.removeEventListener('keydown', onKey); finish(null); } };
+      document.addEventListener('keydown', onKey);
+    });
+  }
   async function uploadGroupFile(field) {
-    const file = field.files?.[0];
-    if (!file || !supabase.url || !supabase.anonKey) return;
-    if (file.size > 80 * 1024 * 1024) { $('#group-editor-status').textContent = 'O arquivo deve ter no máximo 80 MB.'; field.value = ''; return; }
+    const selected = field.files?.[0];
+    if (!selected || !supabase.url || !supabase.anonKey) return;
+    if (selected.size > 80 * 1024 * 1024) { $('#group-editor-status').textContent = 'O arquivo deve ter no máximo 80 MB.'; field.value = ''; return; }
+    const prepared = await previewUpload(selected, field.closest('.editor-field')?.querySelector('label')?.textContent || 'imagem');
+    if (!prepared) { field.value = ''; return; }
+    const file = prepared.file;
     const extension = (file.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '');
-    const path = `${activeGroup.id}/${field.dataset.groupUpload.replaceAll(':', '-')}-${Date.now()}.${extension}`;
+    const uploadKey = field.dataset.groupUpload;
+    const path = `${activeGroup.id}/${uploadKey.replaceAll(':', '-')}-${Date.now()}.${extension}`;
     field.disabled = true;
     $('#group-editor-status').textContent = 'Enviando arquivo para o armazenamento público...';
     try {
       const response = await fetch(`${supabase.url}/storage/v1/object/fecart-media/${path}`, { method: 'POST', headers: { apikey: supabase.anonKey, Authorization: `Bearer ${supabase.anonKey}`, 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, body: file });
       if (!response.ok) throw new Error(`Upload HTTP ${response.status}`);
       const publicUrl = `${supabase.url}/storage/v1/object/public/fecart-media/${path}`;
-      updateGroupField(field.dataset.groupUpload, publicUrl);
-      $('#group-editor-status').textContent = 'Arquivo enviado e salvo para todos.';
+      updateGroupField(uploadKey, publicUrl);
+      const [xKey, yKey] = uploadPositionKeys(uploadKey);
+      updateGroupField(xKey, prepared.x);
+      updateGroupField(yKey, prepared.y);
+      $('#group-editor-status').textContent = 'Arquivo ajustado, enviado e salvo para todos.';
     } catch (error) { $('#group-editor-status').textContent = 'Não foi possível enviar o arquivo.'; console.warn(error); }
     field.disabled = false;
   }
-
   async function saveGroupRemote() {
     if (!supabase.url || !supabase.anonKey || !activeGroup?.id) return false;
     const response = await fetch(apiUrl('fecart_group_content?on_conflict=group_id'), { method: 'POST', headers: { ...apiHeaders(), Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ group_id: activeGroup.id, content: activeGroup }) });
