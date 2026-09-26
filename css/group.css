@@ -2,6 +2,7 @@
 
 /* Ajustes finais do bloco de projeto, sem aumentar as mídias */
 .group-project .block-heading{grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:38px}
+.editor-position{margin:18px 0;padding:12px;border:1px solid var(--line);background:var(--paper-2);border-radius:5px}.editor-position>label{display:block;margin-bottom:12px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--tomato)}.position-control{margin:10px 0}.position-control span{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px;color:var(--muted)}.position-control output{font-weight:700;color:var(--ink)}.position-control input[type=range]{width:100%;accent-color:var(--tomato);padding:0;border:0;background:transparent}
 .group-project .project-detail{grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:clamp(42px,7vw,96px);min-height:620px;align-items:start}
 .group-project .project-detail>div:first-child{min-width:0;min-height:620px}
 .group-project .project-main-media{width:100%;margin-bottom:24px}
